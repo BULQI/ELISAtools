@@ -1,0 +1,23 @@
+Plate:	plate 1
+ID	Std
+s1	3000
+s2	1500
+s3	750
+s4	375
+s5	187.5
+s6	93.8
+s7	46.9
+s8	0
+~End
+
+Plate:	plate 2
+ID	Std
+s1	3000
+s2	1500
+s3	750
+s4	375
+s5	187.5
+s6	93.8
+s7	46.9
+s8	0
+~End

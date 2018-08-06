@@ -1,0 +1,7 @@
+"3"	"4"	"5"	"6"	"7"	"8"	"9"	"10"	"11"	"12"
+"C"	"s1"	"s1"	"sam1_d"	"sam1_d"	"sam7_d"	"sam7_d"	"sam13_d"	"sam13_d"	"sam19_d"	"sam19_d"
+"D"	"s2"	"s2"	"sam2_d"	"sam2_d"	"sam8_d"	"sam8_d"	"sam14_d"	"sam14_d"	"sam20_d"	"sam20_d"
+"E"	"s3"	"s3"	"sam3_d"	"sam3_d"	"sam9_d"	"sam9_d"	"sam15_d"	"sam15_d"	"sam21_d"	"sam21_d"
+"F"	"s4"	"s4"	"sam4_d"	"sam4_d"	"sam10_d"	"sam10_d"	"sam16_d"	"sam16_d"	"sam22_d"	"sam22_d"
+"G"	"s5"	"s5"	"sam5_d"	"sam5_d"	"sam11_d"	"sam11_d"	"sam17_d"	"sam17_d"	"sam23_d"	"sam23_d"
+"H"	"s6"	"s6"	"sam6_d"	"sam6_d"	"sam12_d"	"sam12_d"	"sam18_d"	"sam18_d"	"sam24_d"	"sam24_d"

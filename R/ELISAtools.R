@@ -15,8 +15,8 @@
 ##  library(MASS)
 ####################
 #this is where the files to be include if necessary
-# #' @include SPRTwoState.R
-
+#' @include ELISAtools_IO.R
+#'
 #'
 #' @title ELISA data analysis with batch correction
 #'
