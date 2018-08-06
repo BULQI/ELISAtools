@@ -24,18 +24,21 @@
 #' @param data.std data.frame data for standard curves 
 #'          
 #' @param data.unknown data.frame data for samples with unknown concentration
-#' @param model.regression nls.lm \code{link{nls.lm}} the regression model
-#'		fitted with either four- or five-parameter logistic function.  
-#' @param batch.normFactor numeric the correction factor for batch effects.
-#'
+##' @param model.regression nls.lm \code{link{nls.lm}} the regression model
+##'		fitted with either four- or five-parameter logistic function.  
+#' @param normFactor numeric the correction factor for batch effects.
+#' @param mdata.unknown data.frame data to contain the mean ODs and concentration by sample IDs.
+
 #' @slot batchID character
 #' @slot expID character
 #' @slot data.std data.frame
 #' @slot data.unknown data.frame
-#' @slot model.regression nls.lm 
-#' @slot batch.normFactor numeric
+####' @slot model.regression nls.lm 
+#' @slot normFactor numeric
 #' @slot desc character
 #' @slot range.ODs numeric
+#' @slot mdata.unknown data.frame 
+
 # #' @slot offset numeric
 #' @seealso \code{\link{nls.lm}} 
 #' @examples
@@ -74,10 +77,10 @@ setClass("elisa_plate",
 #' @param data.std data.frame data for standard curves 
 #'          
 #' @param data.unknown data.frame data for samples with unknown concentration
-#' @param model.regression nls.lm \code{\link{nls.lm}} the regression model
+# #' @param model.regression nls.lm \code{\link{nls.lm}} the regression model
 #'		fitted with either four- or five-parameter logistic function.  
 #' @param batch.normFactor numeric the correction factor for batch effects.
-#'
+#' @param mdata.unknown data.frame data to contain the mean ODs and concentration by sample IDs.
 #'	@return an elisa_plate object 
 #' @seealso \code{\link{nls.lm}} \code{\link{loadData}} \code{\link{elisa_plate}} 
 #'	\code{\link{load.ODs}}
@@ -253,6 +256,13 @@ elisa_run<-function(batchID=NA_character_,#expID=NA_character_,
 #'          
 #' @param runs list of elisa_run 
 #' @param num.runs numeric the number of plates in this run
+#' @param pars numeric the actually parameters for the fitting.
+#'		for example for 5pl it is c(a, d,xmid, scal, g).
+#' @param model.fit list intend to contain information for the 
+#'		fitting of nls.lm. But not using it now.
+#' @param model.name character either 5pl (5-parameter) or 4pl 
+#'		(4-parameter) logistic function
+#' @param normFactor numeric batch-wise normalization factor 
 #'
 #' @slot batchID character
 # #' @slot expID character
@@ -262,6 +272,10 @@ elisa_run<-function(batchID=NA_character_,#expID=NA_character_,
 # #' @slot batch.normFactor numeric
 #' @slot desc character
 #' @slot num.runs numeric
+#' @slot pars numeric 
+#' @slot model.fit list
+#' @slot model.name character
+#' @slot normFactor numeric 
 #' @seealso \code{\link{nls.lm}} \code{\link{elisa_plate-class}} \code{\link{elisa_run-class}} 
 #'	\code{\link{elisa_batch-class}} 
 #' @examples
@@ -296,7 +310,7 @@ setClass("elisa_batch",
 #'          
 #' @param runs list elisa_plates in this run. could be one or multiple  
 #' @param num.runs numeric the number of plates in this run.
-#'
+#' @param normFactor numeric batch effect normalization factor.
 #'	@return an elisa_run object 
 #' @seealso \code{\link{nls.lm}} \code{\link{elisa_run-class}} \code{\link{elisa_plate-class}} 
 #'	\code{\link{elisa_batch-class}} 
@@ -327,7 +341,7 @@ setMethod("predict", c("object"="elisa_batch"),
 
 #predict based on the fitted model the elisa_batch data
 #either with batch correction or without batch correction 
-#'@export
+# #'@export
 predictBatchData<-function(batch)
 {
 	if(missing(batch))
@@ -372,6 +386,24 @@ predictBatchData<-function(batch)
 	return (batch)
 }
 
+#'@title predict the concentration of samples based on regression
+#'@description based on the regression, predict the concentration of 
+#'		of unknown sample. Assume the regression has been accomplished.
+#'@details The input data structure contains both the data (ODs) and
+#'		the fitted regression model. The estimation of unknonw concentration
+#'		based on the OD and standard curve of each plate. And then 
+#'		the batch effects are corrected/normalized and the corrected
+#'		concentrations also are	also written into the batch data
+#'		structure.
+#'@param batches list of elisa_batch objects containing 
+#'		both the raw data and the fitted regression model.
+#'
+#'@return the same list of elisa_batch with estimated
+#'		sample concentrations based on OD and fitted regression
+#'		model. The estimated concentrations normalized/corrected
+#'		between different batches are also calculated and recorded.
+#'@seealso \code{\link{R2HTML}} \code{\link{elisa_batch}} \code{\link{elisa_run}}
+#'			\code{\link{elisa_plate}} 
 #'@export
 predictAll<-function(batches)
 {

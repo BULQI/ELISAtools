@@ -302,7 +302,7 @@ findMiddle.batch<-function(ebatch)
 	}#end of run,
 	#now we have the middle points. we need to find the middle line 
 	ix<-order(middles)[ceiling(length(middles)/2)]
-	plate<-batch@runs[[ ind.run[ix] ]]@plates[[ ind.plate[ix] ]];
+	plate<-ebatch@runs[[ ind.run[ix] ]]@plates[[ ind.plate[ix] ]];
 	
 	return(list(OD=plate@data.std$OD,conc=plate@data.std$conc, middle=middles[ix] , 
 			ind.run=ind.run[ix], ind.plate=ind.plate[ix]))
@@ -548,10 +548,21 @@ plotBatchData<-function(batch)
 }
 ###
 #write html report
-
-#'@export
+#'@title report ELISA data in HTML format.
+#'@description writting the ELISA analysis results by batch in HTML format. 
+#'@param batches list of elisa batch data objects. Assuming the data have been 
+#'		fitting to a correct model and the concentration of samples has been 
+#'		estimated based on the regression model.
+#'@param file.name character string denoting the report file. The file will be
+#'		written in HTML format.
+#'@param file.dir character string denoting the directory to save the report. 
+#'@param desc character string describing the project and experiment. Will be 
+#'		written into the report.
+#'@seealso \code{\link{R2HTML}} \code{\link{elisa_batch}} \code{\link{elisa_run}}
+#'			\code{\link{elisa_plate}} 
+#'@export 
 #assuming all the analyses like reading, fitting and predicting have been accomplished 
-reportHtml<-function(batches, file.name="report.html", file.dir=".", desc="")
+reportHtml<-function(batches, file.name="report", file.dir=".", desc="")
 {
 	if(missing(batches))
 	{
