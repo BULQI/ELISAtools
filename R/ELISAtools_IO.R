@@ -915,4 +915,85 @@ loadData<-function(design.file)
 	}
 	return(batches)
 }
-	
+
+#functions to 
+#'@title S3 method to read saved elisa_batch data
+#'@description to load serialized elisa_batch data from disk.
+#'     
+#'@details here we deserialize elisa_batch data by wrapping the readRds()
+#'		function call.
+#'		The serialized elisa_batch data are assumed been correctly 
+#'		analyzed. We will print a summary for what has been read. 
+#'@param  db character the file name specifying the elisa data.
+#' @return a list of batches holding different runs of elisa, which could contain
+#'		one or multiple elisa_plate with data and annotations for 
+#'		each plate.
+#'
+#'@examples
+#' setwd(system.file("extdata", package="ELISAtools"))
+#' loadDB("elisa.rds");
+# #' @seealso  \code{\link{elisa_batch-class}} \code{\link{loadData}} \code{\link{saveDB}}
+#'
+#'@export
+loadDB<-function(db)
+{
+	if(missing(db))
+	{
+		stop("ERROR:please specify the input");
+	}
+	if(!file.exists(db))
+	{
+		if(substr(db,nchar(db)-3, nchar(db))!=".rds")
+		{
+			db<-paste0(db,".rds")
+		}
+		if(!file.exists(db))
+		{
+			stop("ERROR:Can not find the specified ELISA database, Please specify!!")
+		}
+	}
+	cat("  ***loading ELISA data set: ",db,"\n")
+	ret<-readRDS(db);
+	cat("  ***Success!!\n");
+	return(ret)
+}
+
+#function to serialize the elisa_batch data 
+
+#functions to 
+#'@title S3 method to save elisa_batch data
+#'@description to serialize elisa_batch data to disk.
+#'     
+#'@details here we serialize elisa_batch data by wrapping the saveRds()
+#'		function call.
+#'		The serialized elisa_batch data are assumed been correctly 
+#'		analyzed. We will print a summary for what has been saved. 
+#'@param  db character the file name specifying name of the db.
+#'@param  batches list of elisa batch data to be serialized.
+#'
+#'
+#'@examples
+#' setwd(system.file("extdata", package="ELISAtools"))
+#' saveDB("elisa.rds");
+# #' @seealso  \code{\link{elisa_batch-class}} \code{\link{loadData}} \code{\link{saveDB}}
+#'
+#'@export
+saveDB<-function(batches, db)
+{
+	if(missing(batches)||missing(db))
+	{
+		stop("one or both of the input missing, please check!!") 
+	}
+	if(substr(db,nchar(db)-3, nchar(db))!=".rds")
+	{
+		db<-paste0(db,".rds")
+	}
+	if(file.exists(db))
+	{
+		cat("the specified database file exists, and will be overwritten");
+	}
+	cat("  ***saving ELISA data set: ",db,"\n")
+	ret<-saveRDS(batches, db);
+	cat("  ***success!!\n");
+	return(ret);
+	}	

@@ -468,9 +468,21 @@ plotAlignData<-function(batches)
 	x_max<-max(log_conc)
 	
 	x<-seq(x_min, x_max*1.1,by=(x_max-x_min)/1000);
-	y<-f5pl(pars, x)
-	plot(x,y, type="l",xlab="conc", ylab="OD", lwd=2, 
-			lty=2,col=1, main="ELISA Aligned Data");
+	ymin<-batches[[1]]@range.ODs[1]
+	ymax<-batches[[1]]@range.ODs[2]
+	if(batches[[1]]@model.name=="5pl"&&length(pars)==5)
+	{
+		#pars<-pars+c(0,0,-1*batches[[1]]@normFactor,0,0)
+		y<-f5pl(pars, x)
+		plot(x,y, type="l",xlab="conc", ylab="OD", lwd=2, 
+			lty=2,col=1, main=paste0("ELISA Batch Data:",batches[[1]]@batchID));
+	} else { #for non-analyzed data.
+		plot(c(x_min,x_max),c(ymin,ymax), type="n",xlab="conc", ylab="OD", lwd=2, 
+			lty=2,col=1, main=paste0("ELISA Batch Data:",batches[[1]]@batchID));
+	}
+	#y<-f5pl(pars, x)
+	#plot(x,y, type="l",xlab="conc", ylab="OD", lwd=2, 
+	#		lty=2,col=1, main="ELISA Aligned Data");
 	
 	#plot lines
 	#count<-0;
@@ -483,7 +495,11 @@ plotAlignData<-function(batches)
 			{
 				#count<-count+1;
 				conc<-log(avoidZero(batches[[i]]@runs[[j]]@plates[[k]]@data.std$conc))
-				fac<-batches[[i]]@runs[[j]]@plates[[k]]@normFactor
+				fac<-0;
+				if(!is.na(batches[[i]]@runs[[j]]@plates[[k]]@normFactor))
+				{
+					fac<-batches[[i]]@runs[[j]]@plates[[k]]@normFactor
+				}
 				conc<-conc+fac;
 				points(conc, batches[[i]]@runs[[j]]@plates[[k]]@data.std$OD, col=i+1, pch=i+1)
 				dF<-aggregate(batches[[i]]@runs[[j]]@plates[[k]]@data.std$OD,
@@ -494,7 +510,8 @@ plotAlignData<-function(batches)
 		batchIDs<-c(batchIDs,batches[[i]]@batchID)
 	}
 	batchIDs<-c("fitted line",batchIDs)
-	legend(x_min,pars[2]/2,batchIDs, lty=c(2, rep(3,length(batchIDs)-1)),col=c(1:length(batchIDs)), 
+	legend(x_min,ymax/2,#pars[2]/2,
+			batchIDs, lty=c(2, rep(3,length(batchIDs)-1)),col=c(1:length(batchIDs)), 
 			pch=c(-1,(1:length(batchIDs))+1), lwd=c(2,rep(1,length(batchIDs)-1))
 			)
 }
@@ -513,16 +530,26 @@ plotBatchData<-function(batch)
 	{
 		stop("ERROR: please specify the input as elisa_batch data")
 	}
+	
 	pars<-batch@pars;
 	log_conc<-log(avoidZero(batch@runs[[1]]@plates[[1]]@data.std$conc))
 	x_min<-min(log_conc)
 	x_max<-max(log_conc)
 	
 	x<-seq(x_min, x_max*1.1,by=(x_max-x_min)/1000);
-	pars<-pars+c(0,0,-1*batch@normFactor,0,0)
-	y<-f5pl(pars, x)
-	plot(x,y, type="l",xlab="conc", ylab="OD", lwd=2, 
+	ymin<-batch@range.ODs[1]
+	ymax<-batch@range.ODs[2]
+	if(batch@model.name=="5pl"&&length(pars)==5)
+	{
+		pars<-pars+c(0,0,-1*batch@normFactor,0,0)
+		y<-f5pl(pars, x)
+		plot(x,y, type="l",xlab="conc", ylab="OD", lwd=2, 
 			lty=2,col=1, main=paste0("ELISA Batch Data:",batch@batchID));
+	} else { #for non-analyzed data.
+		plot(c(x_min,x_max),c(ymin,ymax), type="n",xlab="conc", ylab="OD", lwd=2, 
+			lty=2,col=1, main=paste0("ELISA Batch Data:",batch@batchID));
+	}
+	
 	count<-0;
 	runID<-c();
 	for(j in 1:batch@num.runs)
@@ -542,7 +569,8 @@ plotBatchData<-function(batch)
 	}
 	runID<-c("fitted batch mean", paste0("Run_",runID));
 	#batchIDs<-c(batchIDs,batches[[i]]@batchID)
-	legend(x_min,pars[2]/2,runID, lty=c(2, rep(3,length(runID)-1)),col=c(1:length(runID)), 
+	legend(x_min,ymax/2,#pars[2]/2,
+			runID, lty=c(2, rep(3,length(runID)-1)),col=c(1:length(runID)), 
 			pch=rep(-1,length(runID)), lwd=c(2,rep(1,length(runID)-1))
 			)
 }
@@ -558,10 +586,27 @@ plotBatchData<-function(batch)
 #'@param file.dir character string denoting the directory to save the report. 
 #'@param desc character string describing the project and experiment. Will be 
 #'		written into the report.
-#'@seealso \code{\link{R2HTML}} \code{\link{elisa_batch}} \code{\link{elisa_run}}
+#'@examples
+#'#R code to run 5-parameter logistic regression on ELISA data
+#'
+#'#load the library
+#'library(ELISAtools)
+#'
+#'##
+#'#get file folder
+#'dir_file<-system.file("extdata", package="ELISAtools")
+#'setwd(dir_file)
+#'batches<-loadData(file.path(dir_file,"design.txt"))
+#'
+#'#now add
+#'reportHtml(batches);
+#'
+#'@seealso  \code{\link{elisa_batch}} \code{\link{elisa_run}}
 #'			\code{\link{elisa_plate}} 
+#'
 #'@export 
 #assuming all the analyses like reading, fitting and predicting have been accomplished 
+#updated 8/24/2018, now it could take care of raw data without analysis
 reportHtml<-function(batches, file.name="report", file.dir=".", desc="")
 {
 	if(missing(batches))
@@ -584,7 +629,7 @@ reportHtml<-function(batches, file.name="report", file.dir=".", desc="")
 	{
 		cat("The specified file exists and will be overwritten");
 	}
-	
+	file.dir<-file.path(file.dir);
 		#now start 
 	HTMLStart(outdir=file.dir, file=file.name,
 		extension="html", echo=F, HTMLframe=FALSE#, append=TRUE
@@ -608,6 +653,7 @@ reportHtml<-function(batches, file.name="report", file.dir=".", desc="")
 	x<-HTML(batches[[1]]@pars)
 	x<-HTMLhr();
 	x<-HTML.title("Model fitting QC", HR=3);
+	#if(
 	x<-plotAlignData(batches);
 	x<-HTMLplot() ;
 	x<-HTMLhr();
@@ -633,13 +679,15 @@ reportHtml<-function(batches, file.name="report", file.dir=".", desc="")
 				x<-HTML(batch@runs[[j]]@plates[[k]]@data.unknown, nsmall=3, 
 						caption="Sample of Unknown concentration", captionalign="top"
 						)
-				x<-HTML(batch@runs[[j]]@plates[[k]]@mdata.unknown, nsmall=3, 
+				if(!is.null(batch@runs[[j]]@plates[[k]]@mdata.unknown)&&dim(batch@runs[[j]]@plates[[k]]@mdata.unknown)[1]!=0)
+				{
+					x<-HTML(batch@runs[[j]]@plates[[k]]@mdata.unknown, nsmall=3, 
 						caption="Sample of Unknown concentration(Mean)", captionalign="top")
+				}
 				x<-HTMLhr();
 			}
 		}
 		
 	}
 	HTMLStop();
-	
 }

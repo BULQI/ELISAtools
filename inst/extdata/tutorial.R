@@ -9,6 +9,8 @@ dir_file<-system.file("extdata", package="ELISAtools")
 setwd(dir_file)
 batches<-loadData(file.path(dir_file,"design.txt"))
 
+#now add
+reportHtml(batches);
 #make a guess for the parameters, the other two parameters a and d 
 #will be estimated based on data.
 pars<-c(7.2,0.05, 0.015)
@@ -22,3 +24,17 @@ batches<-predictAll(batches);
 
 #reporting.
 reportHtml(batches)
+
+#now saving the combine data.
+saveDB(batches, "elisa_tool1.rds");
+batches.old<-loadDB("elisa_tool1.rds");
+
+#now suppose want to join/combine the two batches, old and new 
+batches.com<-combineData(batches.old, batches);
+reportHtml(batches.com)
+
+batches<-runFit(pars=pars,  batches=batches.com, refBatch.ID=1  )
+
+#now call to do predications based on the model.
+batches.com<-predictAll(batches.com);
+reportHtml(batches.com);

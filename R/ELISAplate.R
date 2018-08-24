@@ -402,7 +402,7 @@ predictBatchData<-function(batch)
 #'		sample concentrations based on OD and fitted regression
 #'		model. The estimated concentrations normalized/corrected
 #'		between different batches are also calculated and recorded.
-#'@seealso \code{\link{R2HTML}} \code{\link{elisa_batch}} \code{\link{elisa_run}}
+#'@seealso  \code{\link{elisa_batch}} \code{\link{elisa_run}}
 #'			\code{\link{elisa_plate}} 
 #'@export
 predictAll<-function(batches)
@@ -424,4 +424,134 @@ predictAll<-function(batches)
 		batches[[i]]<-predictBatchData(batch)
 	}
 	return(batches)
+}
+#functions to combine two elisa batch list into one.
+
+
+#functions to 
+#'@title S3 method to combine elisa_batch data
+#'@description to combine the two lists of elisa_batch data.
+#'     
+#'@details When combining, we not only concatenate the two data sets, 
+#'		but also combine batches, meaning the two 
+#'		batches with same batch ID will be merge into one. 
+#'		We will not merge the runs, but same batch from different
+#'		list will always have different runs. It is the user's 
+#'		responsibility to make sure the runs are different.  
+#'@param  eb1 list of elisa_batch data 
+#'@param  eb2 list of elisa_batch data 
+#'
+#'@return a list of elisa_batch data combining the two input lists (sorted);
+#'@examples
+#' setwd(system.file("extdata", package="ELISAtools"))
+#' saveDB("elisa.rds");
+# #' @seealso  \code{\link{elisa_batch-class}} \code{\link{loadData}} \code{\link{saveDB}}
+#'
+#'@export
+combineData<-function(eb1, eb2)
+{
+		if(missing(eb1)||missing(eb2))
+		{
+			stop("please specify the input data")
+		}
+		#let's do merge sort kind of combining.
+		#first get the batch ids
+		eb1.id<-names(eb1);
+		eb2.id<-names(eb2);
+		
+		#sort them
+		eb1.ids<-sort(eb1.id)
+		eb2.ids<-sort(eb2.id)
+		
+		#now go through to combine then
+		len1<-length(eb1.ids)
+		len2<-length(eb2.ids)
+		idx1<-1;
+		idx2<-1;
+		count<-0;
+		#flag<-TRUE
+		batch<-list();
+		while(TRUE){
+			#check for orders
+			if(idx1>len1 || idx2>len2)
+			{
+				#flag<-FALSE;
+				break;
+			}
+			count<-count+1;
+			if(eb1.ids[idx1]==eb2.ids[idx2])
+			{
+				#combine batch together.
+				batch[[count]]<-combineBatch(eb1[[eb1.ids[idx1] ]],eb2[[eb2.ids[idx2] ]]);
+				idx1<-idx1+1;
+				idx2<-idx2+1;
+				#next;
+			} else if(eb1.ids[idx1]>eb1.ids[idx2]){
+				batch[[count]]<-eb1[[ eb1.ids[idx1] ]];
+				idx1<-idex1+1
+			} else { #the case where eb1.ids[idx]<eb1.ids[idx2]
+				batch[[count]]<-eb2[[ eb2.ids[idx2] ]];
+				idx2<-idex2+1
+			}
+		}#end of merge combine.
+		
+		#now need to copy over the left-behind
+		if(idx1<=len1)
+		{
+			for(i in idx1:len1)
+			{
+				count<-count+1;
+				batch[[count]]<-eb1[[ eb1.ids[i] ]]
+			}
+		}
+		if(idx2<=len2)
+		{
+			for(i in idx2:len2)
+			{
+				count<-count+1;
+				batch[[count]]<-eb2[[ eb2.ids[i] ]];
+			}
+		}
+		return(batch)
+}
+#internal function
+#we will combine two batches, with identical batch IDs
+#	When combined, we will assume the two have identical
+#	batchIDs and will combine the runs, reset the analysis
+#	assuming we will have to do the analysis again.
+# #'@param b1 elisa_batch data
+# #'@param b2 elisa_batch data
+# #'@return combined elisa_batch data.
+
+combineBatch<-function(b1,b2)
+{
+	batch<-b1;
+	#copy over the runs
+	num.runs2<-b2@num.runs;
+	num.runs1<-b1@num.runs;
+	for(i in 1:num.runs2)
+	{
+		batch@runs[[num.runs1+i]]<-b2@runs[[i]];
+	}
+	batch@num.runs<-num.runs1+num.runs2;
+	batch@range.ODs[1]<-min(b1@range.ODs[1], b2@range.ODs[1]);
+	batch@range.ODs[2]<-max(b1@range.ODs[2], b2@range.ODs[2]);
+	
+	#always reset the analysis.
+	#if(is.na(b1@normFactor)||is.na(b2@normFactor)||b1@normFactor!=b2@normFactor)
+	#{
+	resetElisaBatchAnalysis(batch);
+	#}
+	
+	return(batch)
+}
+
+#internal function to reset the analysis of
+#the elisa_batch data.
+resetElisaBatchAnalysis<-function(b)
+{
+	b@normFactor<- NaN;
+	b@pars<-c(-1);
+	b@model.name<-"";
+	return(b)
 }
