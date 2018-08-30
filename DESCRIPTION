@@ -5,7 +5,8 @@ Authors@R: person("Feng", "Feng", email = "ffeng@BU.edu", role = c("aut", "cre")
 Description: To run data analysis for ELISA results with either 
 	five- or four-parameter logistic model as well as to do batch
 	effect correction/normalizatoin.
-Depends: R (>= 3.4.3)
+Depends: R (>= 3.4.3),
+	R2HTML(>= 2.3.2)
 License: MIT
 Encoding: UTF-8
 LazyData: true

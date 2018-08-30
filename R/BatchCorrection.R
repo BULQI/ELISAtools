@@ -70,26 +70,24 @@ prepareRegInput<-function(batches
 	#'@description generate the initial values for fitting shifts with 
 	#'	a model of the 5-parameter logistic function.
 	#'@details this is a more complicated way to prepare the initials for shifting. 
-	#'	The assumption is that the signal strengths of a feature in protein microarray
-	#'	(ProtoArray, invitrogen) acquired with different PMT gains follow 
+	#'	The assumption is that the OD values of analytes in ELISA 
+	#'	follow 
 	#'	a 5-parameter logistic function (5pl) as \cr
 	#'	\ifelse{html}{\out{<script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 	#'						$$y = a + {{d-a} \over {(1 + e^ {{(xmid - x)} \over scal})}^g} $$
 	#'				 	}}{\deqn{y=a+\frac{d-a}{(1+e^(\frac{xmid-x}{scal}))^g}}{ASCII}}
 	#'	\cr 
-	#'	where a is the upper bound; d is the lower bound); 
+	#'	where a is the upper bound; d is the lower bound; 
 	#'	scal is the slope of the linear middle part of the line; 
 	#'	xmid is x value at which y equals to (a-d)/2; g is the asymmetric factor.\cr
-	#'	On the same array, the 5pl lines for different
-	#'	feature proteins should follow a similar pattern, but shifted horizontally left or
-	#'	right based on the level of the secondary antibodies bound, which is determined
-	#'	by the level of printed feature proteins as well as the interaction between
-	#'	the feature protein and the testing antibody/protein. In terms of the
-	#'	5pl function parameters, the 5pl lines for different feature proteins are identical
+	#'	Another assumption is that the 5pl lines for different
+	#'	batches should follow a similar pattern, but shifted horizontally left or
+	#'	right due to factors such as the changes in the standard reagents. In terms of the
+	#'	5pl function parameters, the 5pl lines for different batches are identical
 	#'	in a, d, scal and g, but different in xmid; That is to say that if we shift these 
 	#'	lines horizontally with the correct amounts, the lines can merge into one line.
 	#'	Therefore, we fit these lines together to one 5paremeter logistic function with
-	#'	identical a, d, scal and g, as well as one xmid for one reference line and one
+	#'	identical a, d, scal and g, as well as one xmid for the reference line and one
 	#'	shift for each other lines. In this function, we use a linear model to generate
 	#'	the initial values for these shifts parameter of the fitting. \cr
 	#'	The algorithm takes a local linear model to generate the initial values like this,
@@ -125,8 +123,12 @@ prepareRegInput<-function(batches
 	#'		}
 	#'}
 	#'to estimate the shift k, we take 
-	#'\eqn{k=log(Xj_i/Xj_i_pre)}
-	
+	#'\eqn{k=log(Xj_i/Xj_i_pre)}\cr
+	#'Another note is that we specify as an input which batch to use as the "reference".
+	#'Then within the batch, we pick as indicated above the reference standard line
+	#'. The return value records the batch, the run and the plate as output. Also
+	#'the inits output has a number of elements identical to the total number of
+	#'plates.
 	#The accessary function for preparint intial values for nlsLM
 	#this is necessary, because we might have many data series.
 	#we need this for actually prepare the initial values
@@ -135,29 +137,25 @@ prepareRegInput<-function(batches
 	#and make the initial values in order to do nlsLM fitting
 	#it returns an array which has length identifical to the total series (row lengths)
 	#
-	#'@param y dataframe this is raw data and has NOT been prepared. 
-	#'		it has row as genes and col as pmts
-	#'@param x numeric vector It contains the PMT settings for each array. 
-	#'@param data.aggregated Parameter indicates whether the data has been 
-	#'		aggregated, mean the two repeats has been averaged. 
-	#'		By default it is not. In this case, we will generate 
-	#'		the two repeat the identical shift, k.
-	#
-	#'@param ref.line list mean to use an external line as the reference line.
-	#'		if missing then, use the internal line as the reference.
-	#'		It is a list containing two items. The first one is the ref.index 
-	#'		for the index of the reference line in the first data set. The
-	#'		second is the actually lines. this could be two line for unaggregated
-	#'		data or one for aggregated data.
+	#'@param batch list of elisa_batch data 
+	#'		
+	#'@param ref.batch numeric the index of the reference batch. It is 1
+	#'		by default.
 	#'
-	#'@return a data list contain two things. First is the ref.index, the index
-	#'		of the line in the data set. If we are using the external reference 
-	#'		line, then this is -1. The second is estimated initial values for
-	#'		shifts. The shifts INCLUDE the shift for the reference line with
-	#'		a value of zero. 
-	#'		Note: 1) the prepared inits vector always is in a format of aggregated data
-	#'		; 2) in log'ed fold; and
-	#'		the output doesn't include ref.line when we reference to the external lines
+	#'@return a data list contain the following elements,
+	#' \itemize{
+	#'	\item {inits, the initial values for the standard curves of all the plates\cr}
+	#'		
+	#'	\item {ref.ibatch, the index of the reference batch\cr}
+	#'		{
+	#'			This one is specified by the input ref.batch.
+	#'		}
+	#'	\item {ref.irun,the index of the reference run\cr}
+	#'
+	#'	\item {ref.index,the index of the reference line in the order
+	#'			of the inits vector\cr}
+	#'
+	#'}
 	#'@export
 	prepareInitsLM<-function(batches, ref.batch=1)
 	{
@@ -470,15 +468,18 @@ plotAlignData<-function(batches)
 	x<-seq(x_min, x_max*1.1,by=(x_max-x_min)/1000);
 	ymin<-batches[[1]]@range.ODs[1]
 	ymax<-batches[[1]]@range.ODs[2]
+	flag.analyzed<-T;
 	if(batches[[1]]@model.name=="5pl"&&length(pars)==5)
 	{
 		#pars<-pars+c(0,0,-1*batches[[1]]@normFactor,0,0)
 		y<-f5pl(pars, x)
 		plot(x,y, type="l",xlab="conc", ylab="OD", lwd=2, 
 			lty=2,col=1, main=paste0("ELISA Batch Data:",batches[[1]]@batchID));
+		flag.analyzed<-T;
 	} else { #for non-analyzed data.
 		plot(c(x_min,x_max),c(ymin,ymax), type="n",xlab="conc", ylab="OD", lwd=2, 
 			lty=2,col=1, main=paste0("ELISA Batch Data:",batches[[1]]@batchID));
+		flag.analyzed<-F;
 	}
 	#y<-f5pl(pars, x)
 	#plot(x,y, type="l",xlab="conc", ylab="OD", lwd=2, 
@@ -496,7 +497,7 @@ plotAlignData<-function(batches)
 				#count<-count+1;
 				conc<-log(avoidZero(batches[[i]]@runs[[j]]@plates[[k]]@data.std$conc))
 				fac<-0;
-				if(!is.na(batches[[i]]@runs[[j]]@plates[[k]]@normFactor))
+				if(flag.analyzed&&!is.na(batches[[i]]@runs[[j]]@plates[[k]]@normFactor))
 				{
 					fac<-batches[[i]]@runs[[j]]@plates[[k]]@normFactor
 				}
@@ -657,7 +658,7 @@ reportHtml<-function(batches, file.name="report", file.dir=".", desc="")
 	x<-plotAlignData(batches);
 	x<-HTMLplot() ;
 	x<-HTMLhr();
-	x<-Sys.sleep(0.6);
+	x<-Sys.sleep(0.95);
 	x<-HTML.title("Data Output:", HR=3);
 	for(i in 1:length(batches))
 	{

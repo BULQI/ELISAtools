@@ -542,8 +542,8 @@ combineBatch<-function(b1,b2)
 	#{
 	resetElisaBatchAnalysis(batch);
 	#}
-	
-	return(batch)
+	#
+	#return(batch)
 }
 
 #internal function to reset the analysis of

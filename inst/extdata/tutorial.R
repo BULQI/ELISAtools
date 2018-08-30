@@ -23,7 +23,7 @@ batches<-runFit(pars=pars,  batches=batches, refBatch.ID=1  )
 batches<-predictAll(batches);
 
 #reporting.
-reportHtml(batches)
+reportHtml(batches, file.name="report_ana")
 
 #now saving the combine data.
 saveDB(batches, "elisa_tool1.rds");
@@ -31,10 +31,10 @@ batches.old<-loadDB("elisa_tool1.rds");
 
 #now suppose want to join/combine the two batches, old and new 
 batches.com<-combineData(batches.old, batches);
-reportHtml(batches.com)
+reportHtml(batches.com, file.name="report_com")
 
-batches<-runFit(pars=pars,  batches=batches.com, refBatch.ID=1  )
+batches.com<-runFit(pars=pars,  batches=batches.com, refBatch.ID=1  )
 
 #now call to do predications based on the model.
 batches.com<-predictAll(batches.com);
-reportHtml(batches.com);
+reportHtml(batches.com,file.name="report_com_ana");
