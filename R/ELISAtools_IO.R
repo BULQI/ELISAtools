@@ -1088,7 +1088,7 @@ saveDataText<-function(batches, file.name)
 				dfm<-dfm[,c(1,dim(dfm)[2]-c(nRep:1)+1,c(2:(dim(dfm)[2]-nRep))) ]
 			
 				#now save the data
-				write.table(dfm,file=file.conn,append=T,sep="\t")
+				suppressWarnings(write.table(dfm,file=file.conn,append=T,sep="\t"))
 				write("\n",file.conn, append=T);
 			}
 		}

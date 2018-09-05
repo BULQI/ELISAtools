@@ -705,4 +705,5 @@ reportHtml<-function(batches, file.name="report", file.dir=".", desc="")
 	HTMLStop();
 	fn<-file.path(file.dir, paste0(file.name,".txt"));
 	saveDataText(batches, fn);
+	cat("\n");
 }
