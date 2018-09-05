@@ -422,6 +422,8 @@ read.annotation<-function(annotation,  std.conc)
 			}
 		} 
 	}
+	class(annotations.std$col)="integer";
+	class(annotations.unknown$col)="integer"; 
 	list(standards=annotations.std, unknowns=annotations.unknown)
 }
 #
@@ -996,4 +998,100 @@ saveDB<-function(batches, db)
 	ret<-saveRDS(batches, db);
 	cat("  ***success!!\n");
 	return(ret);
-	}	
+}	
+
+#functions to 
+#'@title S3 method to save elisa_batch analysis results
+#'@description to save the data analysis results to disk in text format.
+#'     
+#'@details The results are written to disk in the text format and is 
+#'	easy to be used for other analysis. 
+#'@param  file character the file name specifying name of the db.
+#'@param  batches list of elisa batch data to be serialized.
+#'
+#'
+#'@examples
+#' setwd(system.file("extdata", package="ELISAtools"))
+#' saveDB("elisa.rds");
+# #' @seealso  \code{\link{elisa_batch-class}} \code{\link{loadData}} \code{\link{saveDB}}
+#'
+#'@export
+saveDataText<-function(batches, file.name)
+{
+	if(missing(batches))
+	{
+		stop("please specify the input batch data");
+	}
+	if(missing(file.name))
+	{
+		stop("please specify the file name for the analysis results");
+	}
+	if(file.exists(file.name))
+	{
+		cat("the specified file for saving analysis results exists. It will be overwritten");
+	}
+	file.conn<-file(file.name);
+	open(file.conn,open="w");
+	write(c("ELISA tool data analysis results"),file.conn, append=FALSE);
+	write(c(paste0("Date:\t",date(),"\r\n")),file.conn, append=TRUE);
+	
+	for( i in 1:length(batches))
+	{
+		write(c("==============="),file.conn, append=TRUE)
+		
+		batch<-batches[[i]];
+		#for each batch write the following.........
+		write(c(paste0("batch:\t",batch@batchID,"\tS Factor:\t",batch@normFactor)),file.conn, append=TRUE)
+		write(c("==============="),file.conn, append=TRUE)
+		#now we first rearrange the data into data.frame and the write it out.
+		for(j in 1:batch@num.runs)
+		{
+			#write(c(paste0("R:\t",batch@batchID,"\tS Factor:\t",batch@normFactor)),file.conn
+			for(k in 1:batch@runs[[j]]@num.plates)
+			{
+				write(paste0("RUN_#",j, ":plate_#",k),file.conn, append=TRUE);
+				#start making the data frame for output data
+				unknown<-batch@runs[[j]]@plates[[k]]@data.unknown;
+				ids<-unique(unknown$ID);
+				#determine the number repeats 
+				nRep<-max(aggregate(unknown, FUN=length,by=list(unknown$ID))$ID)
+				
+				dfm<-data.frame();
+				if(!is.null(batch@runs[[j]]@plates[[k]]@mdata.unknown)&&dim(batch@runs[[j]]@plates[[k]]@mdata.unknown)[1]!=0)
+				{
+					dfm<-batch@runs[[j]]@plates[[k]]@mdata.unknown;
+				}else {
+					dfm<-aggregate(unknown[,"OD"], FUN=mean,by=list(unknown$ID))
+					colnames(dfm)<-c("ID","OD");
+				}
+				colnames(dfm)[colnames(dfm)=="OD"]<-"OD_avg";
+				for(q in 1:nRep)
+				{
+					dfm<-cbind(dfm, raw=NaN)
+				}
+				#extrCol.averageOD<-0;
+				#if(is.null(batch@runs[[j]]@plates[[k]]@mdata.unknown)||dim(batch@runs[[j]]@plates[[k]]@mdata.unknown)[1]==0){
+				#	dfm<-cbind(dfm, OD=NaN);
+				#	extrCol.averageOD<-1;
+				#}
+				#rownames(dfm)<-dfm$ID;
+				#dfm<-dfm[ids,]
+				for(p in 1:length(ids))
+				{
+						smp<-unknown[unknown$ID==ids[p],]$OD
+						dfm[dfm$ID==ids[p],c(dim(dfm)[2]-nRep+c(1:nRep))]<-smp;
+						#if(is.null(batch@runs[[j]]@plates[[k]]@mdata.unknown)||dim(batch@runs[[j]]@plates[[k]]@mdata.unknown)[1]==0){
+						#	dfm[dfm$ID==ids[p],"OD"]<-mean(smp);
+						#}
+				}
+				#nRep<-nRep+extrCol.averageOD;
+				dfm<-dfm[,c(1,dim(dfm)[2]-c(nRep:1)+1,c(2:(dim(dfm)[2]-nRep))) ]
+			
+				#now save the data
+				write.table(dfm,file=file.conn,append=T,sep="\t")
+				write("\n",file.conn, append=T);
+			}
+		}
+	}
+	close(file.conn);
+}

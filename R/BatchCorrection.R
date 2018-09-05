@@ -624,8 +624,7 @@ reportHtml<-function(batches, file.name="report", file.dir=".", desc="")
 	{
 		stop("ERROR:the specified directory doesn't exist. please check")
 	}
-	
-	
+		
 	if(file.exists(file.path(file.dir, file.name)))
 	{
 		cat("The specified file exists and will be overwritten");
@@ -649,9 +648,22 @@ reportHtml<-function(batches, file.name="report", file.dir=".", desc="")
 		return(NULL);
 	}};
 	x<-HTML(data.frame(desc="Regression Model:", content=batches[[1]]@model.name));
-	
+	if(!is.null(batches[[1]]@model.name)&&batches[[1]]@pars!=-1){
 	x<-HTML("Model Parameters:");
 	x<-HTML(batches[[1]]@pars)
+	x<-HTML("S Factors:");
+	#make one data frame to output the s factors
+	bIds<-c();
+	bNfac<-c();
+	for(j in 1:length(batches))
+	{
+		batch<-batches[[j]];
+		bIds<-c(bIds,batch@batchID);
+		bNfac<-c(bNfac,batch@normFactor);
+	}
+	#dfm<-data.frame();
+	x<-HTML(data.frame("Batch"=bIds,"S_Factor"=bNfac));
+	}
 	x<-HTMLhr();
 	x<-HTML.title("Model fitting QC", HR=3);
 	#if(
@@ -664,7 +676,7 @@ reportHtml<-function(batches, file.name="report", file.dir=".", desc="")
 	{
 		batch<-batches[[i]];
 		
-		x<-HTML.title(paste0(batch@batchID,":"), HR=2);
+		x<-HTML.title(paste0("Batch:",batch@batchID,"; S Factor:", format(batch@normFactor,digit=3,nsmall=2)), HR=2);
 		x<-plotBatchData(batch);
 		x<-HTMLplot() ;
 		#write data.
@@ -691,4 +703,6 @@ reportHtml<-function(batches, file.name="report", file.dir=".", desc="")
 		
 	}
 	HTMLStop();
+	fn<-file.path(file.dir, paste0(file.name,".txt"));
+	saveDataText(batches, fn);
 }
