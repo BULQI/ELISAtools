@@ -8,6 +8,7 @@
 #import to use the fitting functions
 # #'@import PAST
 #'@import minpack.lm
+# ##'@import stringi
 
 #'@export
 #note 1) the outside caller need to prepare for data aggregation, in here

@@ -6,11 +6,13 @@ Description: To run data analysis for ELISA results with either
 	five- or four-parameter logistic model as well as to do batch
 	effect correction/normalizatoin.
 Depends: R (>= 3.4.3),
-	R2HTML(>= 2.3.2)
+	R2HTML (>= 2.3.2),
+	stringi (>= 1.1.7),
+	minpack.lm (>= 1.2-1)
 License: MIT
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.0.9000
 Collate: 
     'BatchCorrection.R'
     'ELISAplate.R'

@@ -1,6 +1,8 @@
 ###this is module to take care of input/output for the ELISAtools project
 #---- by Feng 07/2018
 ###############
+####import the stringi to take care of locale, mainly in mac 
+#'@import stringi
 
 #'@include ELISAplate.R
 
@@ -749,7 +751,7 @@ read.plates<-function(fileName, annotations, num.plate=1, batchID, expID )
 	con<-file(fileName,"r");
 	OD.raw<-readLines(con, skipNul=T); #read in 100 lines, should be way more than enough
 	close(con);
-	
+	OD.raw<-stri_conv(OD.raw, to="UTF-8");
 	if(length(annotations)<num.plate)
 	{
 		stop("ERROR: the num of plate specified is less than the elements of annotatoins, please check");
