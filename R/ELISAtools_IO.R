@@ -1100,7 +1100,8 @@ saveDataText<-function(batches, file.name)
 				dfm<-dfm[,c(1,dim(dfm)[2]-c(nRep:1)+1,c(2:(dim(dfm)[2]-nRep))) ]
 			
 				#now save the data
-				suppressWarnings(write.table(dfm,file=file.conn,append=T,sep="\t"))
+				suppressWarnings(write.table(dfm,file=file.conn,append=T,sep="\t", row.names = F))
+				suppressWarnings(write.table(batch@runs[[j]]@plates[[k]]@mdata.std,file=file.conn,append=T,sep="\t", row.names = F))
 				write("\n",file.conn, append=T);
 			}
 		}

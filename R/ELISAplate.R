@@ -48,11 +48,11 @@ setClass("elisa_plate",
 	representation(batchID="character",expID="character",
 	desc="character", data.std="data.frame",
 	data.unknown="data.frame", #model.regression="list",
-	mdata.unknown="data.frame",
+	mdata.unknown="data.frame", mdata.std="data.frame",
 	normFactor="numeric", range.ODs="numeric"	
 	), 
 	prototype(batchID=NA_character_,expID=NA_character_,
-	desc=NA_character_, data.std=data.frame(),
+	desc=NA_character_, data.std=data.frame(),mdata.std=data.frame(),
 	data.unknown=data.frame(), mdata.unknown=data.frame(),#model.regression=list(),
 	normFactor=0, range.ODs=c(-1,-1)	
 	)
@@ -88,12 +88,12 @@ setClass("elisa_plate",
 #'	elisa_plate();
 #' @export
 elisa_plate<-function(batchID=NA_character_,expID=NA_character_,
-	desc=NA_character_, data.std=data.frame(),
+	desc=NA_character_, data.std=data.frame(), mdata.std=data.frame(),
 	data.unknown=data.frame(), mdata.unknown=data.frame(),#model.regression=list(),
 	normFactor=0, range.ODs=c(-1,-1)	)
 {
 	return(new("elisa_plate",batchID=batchID,expID=expID,
-	desc=desc, data.std=data.std,
+	desc=desc, data.std=data.std, mdata.std=mdata.std,
 	data.unknown=data.unknown, #model.regression=model.regression,
 	mdata.unknown=mdata.unknown,
 	normFactor=normFactor,range.ODs=range.ODs))	
@@ -387,6 +387,24 @@ predictBatchData<-function(batch)
 			dF<-dF[,c("group","x","conc_pred","conc_pred.bc")]
 			names(dF)<-c("ID","OD","conc_pred","conc_pred.bc")
 			batch@runs[[i]]@plates[[j]]@mdata.unknown<-dF;
+			
+			#--now add the predications for standard table
+			stdx.expect<-inv.f5pl(pars.plate, batch@runs[[i]]@plates[[j]]@data.std$OD);
+			batch@runs[[i]]@plates[[j]]@data.std$conc_pred<-stdx.expect;
+			batch@runs[[i]]@plates[[j]]@data.std$conc_pred.bc<-stdx.expect*exp(batchNormFac);
+			dF<-aggregate(batch@runs[[i]]@plates[[j]]@data.std$OD, 
+					by=list(group=batch@runs[[i]]@plates[[j]]@data.std$ID), FUN=mean);
+			dF.conc<-aggregate(batch@runs[[i]]@plates[[j]]@data.std$conc, 
+					by=list(group=batch@runs[[i]]@plates[[j]]@data.std$ID), FUN=mean);
+			names(dF.conc)<-c("ID","conc");
+			stdx.expect<-inv.f5pl(pars.plate, dF$x);
+			dF$conc_pred<-stdx.expect
+			dF$conc_pred.bc<-stdx.expect*exp(batchNormFac);
+			dF<-dF[,c("group","x","conc_pred","conc_pred.bc")]
+			names(dF)<-c("ID","OD","conc_pred","conc_pred.bc")
+			dF.conc<-cbind(dF.conc,dF[,c("OD","conc_pred","conc_pred.bc")]);
+			batch@runs[[i]]@plates[[j]]@mdata.std<-dF.conc;
+			
 		}
 	}
 	return (batch)
@@ -433,7 +451,7 @@ predictAll<-function(batches)
 }
 #functions to combine two elisa batch list into one.
 
-
+#----------for data base saving/loading
 #functions to 
 #'@title S3 method to combine elisa_batch data
 #'@description to combine the two lists of elisa_batch data.
