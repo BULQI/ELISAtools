@@ -142,10 +142,15 @@ setMethod("load.ODs", c("x"="elisa_plate"),
 			{
 				stop("please the input plate blank in correct format");
 			}
+			#cat("------in side load od");
 			
 			#now let's finally load data
 			names(plate.data)<-plate.header;
+			#cat("\t ^^^plate.header length:",length(plate.header),";\n")
+			#cat("\t ^^^plate.blank length:",length(plate.blank),";\n")
+			#cat("\t",plate.blank,"\n")
 			names(plate.blank)<-plate.header;
+			#cat("******done\n")
 			plate.data<-plate.data-plate.blank;
 			#now rewrite the row and col of annotation
 			x@data.std<-annotation$standards
@@ -155,6 +160,7 @@ setMethod("load.ODs", c("x"="elisa_plate"),
 			x@data.std<-cbind(x@data.std,"OD"=plate.data[ind])
 			ind<-paste0(rowSym[annotation$unknowns$row],annotation$unknown$col);
 			x@data.unknown<-cbind(x@data.unknown, "OD"=plate.data[ind]);
+			#cat("====done");
 			return(x)
 		}#end of function
 	)

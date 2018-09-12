@@ -495,6 +495,7 @@ read.annotations<-function(annotation,  std.conc, dir.annotation, dir.stdConc,nu
 	}
 	if(!file.exists(std.conc))
 	{
+		cat("std.conc:",std.conc,"\n");
 		stop("ERROR: annotation does not exist, please check.");
 	}
 	
@@ -515,6 +516,7 @@ read.annotations<-function(annotation,  std.conc, dir.annotation, dir.stdConc,nu
 		if(length(ind.start)<1)
 		{
 			warning("not enough plates found in annotation file, please check");
+			cat("not enough plates found in annotation file, please check\n");
 			
 			break;
 			
@@ -621,7 +623,7 @@ read.plate<-function(ODs, annotation, batchID, expID)
 	for(i in 1:length(ODs))
 	{
 		#cat("i:",i,"\n")
-		tempStr<-ODs[i]
+		tempStr<-ODs[i];#trimws(ODs[i], which="both");
 		if(length(grep("^~End",tempStr))>0)
 		{#we are done.
 			#cat("\tbreak");
@@ -642,7 +644,7 @@ read.plate<-function(ODs, annotation, batchID, expID)
 		#	OD.desc<-tempStr;
 		#	next;
 		#}
-		if(nchar(tempStr)>0)
+		if(nchar(trimws(tempStr,which="both"))>0)
 		{
 			if(!OD.readOnce)
 			{
@@ -671,8 +673,10 @@ read.plate<-function(ODs, annotation, batchID, expID)
 	
 	#now we are done parsing, put into data frame and get ready to do output
 	eplate<-elisa_plate();
+	#cat("OD.header length:",length(OD.header), "\n");
 	eplate<-load.ODs(eplate,plate.header= OD.header, plate.data=OD.plate, 
 		plate.blank=OD.blank, annotation=annotation);
+	#cat("\tdone.......\n");
 	eplate@batchID<-batchID;
 	eplate@expID<-expID;
 	eplate@desc<-OD.desc;
@@ -770,22 +774,25 @@ read.plates<-function(fileName, annotations, num.plate=1, batchID, expID )
 	range.ODs.max<- 0
 	for(i in 1:num.plate)
 	{
+		#cat("&&&&&&&&&plate:", i, "\n")
 		#find the anchors or markers for each section/plate
 		ind.start<-grep("^Plate:",OD.raw)
 		if(length(ind.start)<1)
 		{
-			warning("not enough plates found in annotation file, please check");
+			warning("not enough plates found in OD data file (no starting point), please check");
+			#stop("not enough plates found in OD data file (no starting point), please check");
 			
 			break;	
 		}
 		ind.start<-ind.start[1];
-		ind.end<-grep("^~End$",OD.raw);
+		ind.end<-grep("^~End[ \t\r\n]*$",OD.raw);
 		if(length(ind.end)<1)
 		{
-			warning("not enough plates found in annotation file, please check");
+			warning("not enough plates found in OD data file (no ending point), please check");
+			#stop("not enough plates found in OD data file (no ending point), please check");
 			ind.end<-length(OD.raw);
 		}
-		ind.end<-ind.end[1]
+		ind.end<-ind.end[ind.end>ind.start][1]
 		OD<-OD.raw[c(ind.start:ind.end)];
 		OD.raw<-OD.raw[c((ind.end+1):length(OD.raw))];
 		
@@ -874,7 +881,7 @@ loadData<-function(design.file)
 	batches<-list();#vector(mode="list",length=length(batch.IDs))
 	for(i in 1:length(batch.IDs))
 	{
-		#cat("i:",i,"\n")
+		cat("Reading Data for Batch:",i,"--",batch.IDs[i],"\n")
 		ind<-which(dfile$Batch==batch.IDs[i])
 		ebatch<-elisa_batch();
 		ebatch@batchID<-batch.IDs[i];
@@ -883,13 +890,15 @@ loadData<-function(design.file)
 		range.ODs.max<-0;
 		for(j in 1:length(ind))
 		{
-			#cat("\tj:",j,"\n")
+			cat("\tExperiment:",j,"--", dfile[ind[j],]$ExpID,"\n")
+			flush.console();
 			dir_ann<-".";
 			if(!is.na(dfile[ind[j],]$Dir_Annotation))
 			{
 				dir_ann<-dfile[ind[j],]$Dir_Annotation;
 			}
 			dir_sc<-"."
+			
 			if(!is.na(dfile[ind[j],]$Dir_StdConc))
 			{
 				dir_sc<-dfile[ind[j],]$Dir_StdConc;
@@ -917,6 +926,7 @@ loadData<-function(design.file)
 		ebatch@range.ODs<-c(range.ODs.min, range.ODs.max);
 		batches[[ batch.IDs[i] ]]<-ebatch;
 	}
+	cat("Done!!!\n")
 	return(batches)
 }
 

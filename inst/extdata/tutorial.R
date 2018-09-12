@@ -6,7 +6,9 @@ library(ELISAtools)
 ###
 #get file folder
 dir_file<-system.file("extdata", package="ELISAtools")
+#dir_file<-("E:\\feng\\LAB\\hg\\ELISA\\ELISAtools\\dev\\morganFiles")
 setwd(dir_file)
+#batches<-loadData(file.path(dir_file,"Design_2.txt"))
 batches<-loadData(file.path(dir_file,"design.txt"))
 
 #now add
