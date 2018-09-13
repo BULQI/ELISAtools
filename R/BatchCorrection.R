@@ -374,7 +374,7 @@ findUpLow.middle<-function(y, x, OD.middle)
 #'@export
 
 saveRegressionModel<-function(batches, regModel, mode=c("fix.both","fix.low", "fix.high","fix.all"),
-			ref.index=1, a, d, xmid, scal, g)
+			ref.index=1, a, d, xmid, scal, g, model=c("5pl","4pl"))
 {
 	if(missing(batches))
 	{
@@ -388,16 +388,28 @@ saveRegressionModel<-function(batches, regModel, mode=c("fix.both","fix.low", "f
 	{
 		stop("ERROR:please specify the input of the regression model")
 	}
+	model<-match.arg(model);
 	ind<-0;
 	pars<-c();
 	ks<-c();
 	mode<-match.arg(mode);
-	switch(mode,
-	"fix.both"={ind<-4; pars<-c(a, d,regModel$par[1:3]);ks<-regModel$par[-c(1:3)]},
-	"fix.low"={ind<-5;pars<-c(a, regModel$par[1:4]);ks<-regModel$par[-c(1:4)]},
-	"fix.high"={ind<-3;pars<-c(regModel$par[1], d,regModel$par[2:4]);ks<-regModel$par[-c(1:4)]},
-	"fix.all"={ind<-1;pars<-c(a, d,xmid, scal, g);ks<-regModel$par}
-	)
+	if(model=="5pl")
+	{
+		switch(mode,
+		"fix.both"={ind<-4; pars<-c(a, d,regModel$par[1:3]);ks<-regModel$par[-c(1:3)]},
+		"fix.low"={ind<-5;pars<-c(a, regModel$par[1:4]);ks<-regModel$par[-c(1:4)]},
+		"fix.high"={ind<-3;pars<-c(regModel$par[1], d,regModel$par[2:4]);ks<-regModel$par[-c(1:4)]},
+		"fix.all"={ind<-1;pars<-c(a, d,xmid, scal, g);ks<-regModel$par}
+		)
+	} else { "4pl"
+		g<-1;
+		switch(mode,
+		"fix.both"={ind<-3; pars<-c(a, d,regModel$par[1:2],g);ks<-regModel$par[-c(1:2)]},
+		"fix.low"={ind<-4;pars<-c(a, regModel$par[1:3],g);ks<-regModel$par[-c(1:3)]},
+		"fix.high"={ind<-2;pars<-c(regModel$par[1], d,regModel$par[2:3],g);ks<-regModel$par[-c(1:3)]},
+		"fix.all"={ind<-1;pars<-c(a, d,xmid, scal, g);ks<-regModel$par}
+		)
+	}
 	names(pars)<-c("a","d","xmid","scal","g")
 	#now, let's insert zero into the array 
 	if(ref.index>length(ks)+1||ref.index<=0)
@@ -429,7 +441,7 @@ saveRegressionModel<-function(batches, regModel, mode=c("fix.both","fix.low", "f
 			}
 		}
 		batches[[i]]@pars<-pars;
-		batches[[i]]@model.name<-"5pl";
+		batches[[i]]@model.name<-model;
 		#batches[[i]]@model.fit<-regModel;
 		batches[[i]]@normFactor<-mean(normFactors);
 	}
@@ -469,7 +481,7 @@ plotAlignData<-function(batches)
 	ymin<-batches[[1]]@range.ODs[1]
 	ymax<-batches[[1]]@range.ODs[2]
 	flag.analyzed<-T;
-	if(batches[[1]]@model.name=="5pl"&&length(pars)==5)
+	if((batches[[1]]@model.name=="5pl"||batches[[1]]@model.name=="4pl")&&length(pars)==5)
 	{
 		#pars<-pars+c(0,0,-1*batches[[1]]@normFactor,0,0)
 		y<-f5pl(pars, x)
@@ -502,7 +514,7 @@ plotAlignData<-function(batches)
 					fac<-batches[[i]]@runs[[j]]@plates[[k]]@normFactor
 				}
 				conc<-conc+fac;
-				points(conc, batches[[i]]@runs[[j]]@plates[[k]]@data.std$OD, col=i+1, pch=i+1)
+				points(conc, batches[[i]]@runs[[j]]@plates[[k]]@data.std$OD, col=i+1, pch=(i+1)%%25)
 				dF<-aggregate(batches[[i]]@runs[[j]]@plates[[k]]@data.std$OD,
 						by=list(conc=batches[[i]]@runs[[j]]@plates[[k]]@data.std$conc),FUN=mean)
 				lines(log(avoidZero(dF$conc))+fac,dF$x,col=i+1,lty=3);
@@ -540,7 +552,7 @@ plotBatchData<-function(batch)
 	x<-seq(x_min, x_max*1.1,by=(x_max-x_min)/1000);
 	ymin<-batch@range.ODs[1]
 	ymax<-batch@range.ODs[2]
-	if(batch@model.name=="5pl"&&length(pars)==5)
+	if((batch@model.name=="5pl"||batch@model.name=="4pl")&&length(pars)==5)
 	{
 		pars<-pars+c(0,0,-1*batch@normFactor,0,0)
 		y<-f5pl(pars, x)
@@ -561,7 +573,7 @@ plotBatchData<-function(batch)
 			conc<-log(avoidZero(batch@runs[[j]]@plates[[k]]@data.std$conc))
 			#fac<-batch@runs[[j]]@plates[[k]]@normFactor
 			#conc<-conc+fac;
-			points(conc, batch@runs[[j]]@plates[[k]]@data.std$OD, col=j+1, pch=count)
+			points(conc, batch@runs[[j]]@plates[[k]]@data.std$OD, col=j+1, pch=count%%25)
 			dF<-aggregate(batch@runs[[j]]@plates[[k]]@data.std$OD,
 					by=list(conc=batch@runs[[j]]@plates[[k]]@data.std$conc),FUN=mean)
 			lines(log(avoidZero(dF$conc)),dF$x,col=j+1,lty=3);
@@ -650,7 +662,11 @@ reportHtml<-function(batches, file.name="report", file.dir=".", desc="")
 	x<-HTML(data.frame(desc="Regression Model:", content=batches[[1]]@model.name));
 	if(!is.null(batches[[1]]@model.name)&&batches[[1]]@pars!=-1){
 	x<-HTML("Model Parameters:");
-	x<-HTML(batches[[1]]@pars)
+	y<-{if(batches[[1]]@model.name=="5pl"){
+		x<-HTML(batches[[1]]@pars)
+	} else { #"4pl" in this case
+		x<-HTML(batches[[1]]@pars[1:4])
+	}};
 	x<-HTML("S Factors:");
 	#make one data frame to output the s factors
 	bIds<-c();

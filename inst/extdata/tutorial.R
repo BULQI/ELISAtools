@@ -15,12 +15,17 @@ batches<-loadData(file.path(dir_file,"design.txt"))
 reportHtml(batches);
 #make a guess for the parameters, the other two parameters a and d 
 #will be estimated based on data.
-pars<-c(7.2,0.05, 0.015)
+model<-"5pl"
+pars<-c(7.2,0.5, 0.015) #5pl inits
 names(pars)<-c("xmid", "scal", "g")
 
-#do fitting. model will be written into data set.
-batches<-runFit(pars=pars,  batches=batches, refBatch.ID=1  )
+#model<-"4pl"
+#pars<-c(7.2,0.9) #4pl inits
+#names(pars)<-c("xmid", "scal")
 
+#do fitting. model will be written into data set.
+batches<-runFit(pars=pars,  batches=batches, refBatch.ID=1, model=model  )
+#batches<-runFit(pars=pars,  batches=batches, refBatch.ID=1, model="4pl"  )
 #now call to do predications based on the model.
 batches<-predictAll(batches);
 
@@ -35,7 +40,7 @@ batches.old<-loadDB("elisa_tool1.rds");
 batches.com<-combineData(batches.old, batches);
 reportHtml(batches.com, file.name="report_com")
 
-batches.com<-runFit(pars=pars,  batches=batches.com, refBatch.ID=1  )
+batches.com<-runFit(pars=pars,  batches=batches.com, refBatch.ID=1 ,model=model )
 
 #now call to do predications based on the model.
 batches.com<-predictAll(batches.com);

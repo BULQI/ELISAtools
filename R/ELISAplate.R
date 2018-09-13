@@ -28,7 +28,7 @@
 ##'		fitted with either four- or five-parameter logistic function.  
 #' @param normFactor numeric the correction factor for batch effects.
 #' @param mdata.unknown data.frame data to contain the mean ODs and concentration by sample IDs.
-
+#' @param mdata.std data.frame data to contain the mean ODs and concentrations for standard data
 #' @slot batchID character
 #' @slot expID character
 #' @slot data.std data.frame
@@ -38,7 +38,7 @@
 #' @slot desc character
 #' @slot range.ODs numeric
 #' @slot mdata.unknown data.frame 
-
+#' @slot mdata.std data.frame
 # #' @slot offset numeric
 #' @seealso \code{\link{nls.lm}} 
 #' @examples
@@ -512,9 +512,11 @@ combineData<-function(eb1, eb2)
 				#next;
 			} else if(eb1.ids[idx1]>eb1.ids[idx2]){
 				batch[[count]]<-eb1[[ eb1.ids[idx1] ]];
+				batch[[count]]<-resetElisaBatchAnalysis(batch[[count]]);
 				idx1<-idex1+1
 			} else { #the case where eb1.ids[idx]<eb1.ids[idx2]
 				batch[[count]]<-eb2[[ eb2.ids[idx2] ]];
+				batch[[count]]<-resetElisaBatchAnalysis(batch[[count]]);
 				idx2<-idex2+1
 			}
 		}#end of merge combine.
@@ -577,5 +579,17 @@ resetElisaBatchAnalysis<-function(b)
 	b@normFactor<- NaN;
 	b@pars<-c(-1);
 	b@model.name<-"";
+	for(i in 1:b@num.runs)
+	{
+		for(j in 1:b@runs[[i]]@num.plates)
+		{
+			#reset the predication in both tables
+			b@runs[[i]]@plates[[j]]@normFactor<-NaN
+			b@runs[[i]]@plates[[j]]@data.std<-b@runs[[i]]@plates[[j]]@data.std[,c("ID","row","col","conc","OD")]
+			b@runs[[i]]@plates[[j]]@mdata.std<-data.frame();#b@runs[[i]]@plates[[j]]@data.std[,c("ID","conc","OD")]
+			b@runs[[i]]@plates[[j]]@data.unknown<-b@runs[[i]]@plates[[j]]@data.unknown[,c("ID","row","col","OD")]
+			b@runs[[i]]@plates[[j]]@mdata.unknown<-data.frame();#b@runs[[i]]@plates[[j]]@data.std[,c("ID","conc","OD")]
+		}
+	}
 	return(b)
 }
