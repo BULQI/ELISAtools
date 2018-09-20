@@ -54,7 +54,7 @@ setClass("elisa_plate",
 	prototype(batchID=NA_character_,expID=NA_character_,
 	desc=NA_character_, data.std=data.frame(),mdata.std=data.frame(),
 	data.unknown=data.frame(), mdata.unknown=data.frame(),#model.regression=list(),
-	normFactor=0, range.ODs=c(-1,-1)	
+	normFactor=NaN, range.ODs=c(-1,-1)	
 	)
 )
 #constructor
@@ -90,7 +90,7 @@ setClass("elisa_plate",
 elisa_plate<-function(batchID=NA_character_,expID=NA_character_,
 	desc=NA_character_, data.std=data.frame(), mdata.std=data.frame(),
 	data.unknown=data.frame(), mdata.unknown=data.frame(),#model.regression=list(),
-	normFactor=0, range.ODs=c(-1,-1)	)
+	normFactor=NaN, range.ODs=c(-1,-1)	)
 {
 	return(new("elisa_plate",batchID=batchID,expID=expID,
 	desc=desc, data.std=data.std, mdata.std=mdata.std,
@@ -295,7 +295,7 @@ setClass("elisa_batch",
 	prototype(batchID=NA_character_,#expID=NA_character_,
 	desc=NA_character_, runs=list(), model.fit=list(),
 	model.name=NA_character_,pars=c(-1),
-	num.runs=1, range.ODs=c(-1,-1), normFactor=0
+	num.runs=1, range.ODs=c(-1,-1), normFactor=NaN
 	)
 )
 
@@ -325,7 +325,7 @@ setClass("elisa_batch",
 #' @export
 elisa_batch<-function(batchID=NA_character_,#expID=NA_character_,
 	desc=NA_character_, runs=list(), model.fit=list(),model.name=NA_character_,pars=c(-1),
-	num.runs=1,	range.ODs=c(-1,-1),normFactor=0)
+	num.runs=1,	range.ODs=c(-1,-1),normFactor=NaN)
 {
 	return(new("elisa_batch",batchID=batchID,#expID=expID,
 	desc=desc, runs=runs,model.fit=model.fit, model.name=model.name, pars=pars,

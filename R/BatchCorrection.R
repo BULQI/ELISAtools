@@ -704,7 +704,7 @@ reportHtml<-function(batches, file.name="report", file.dir=".", desc="")
 			x<-HTMLhr();
 			for(k in 1:batch@runs[[j]]@num.plates)
 			{
-				x<-HTML(paste0("RUN_#",j, ":plate_#",k));
+				x<-HTML(paste0("RUN_#",j, ":plate_#",k,":S Factor:",format(batch@runs[[j]]@plates[[k]]@normFactor,digit=3,nsmall=2)));
 				x<-HTML(batch@runs[[j]]@plates[[k]]@data.unknown, nsmall=3, 
 						caption="Sample of Unknown concentration", captionalign="top"
 						)

@@ -1061,7 +1061,7 @@ saveDataText<-function(batches, file.name)
 			#write(c(paste0("R:\t",batch@batchID,"\tS Factor:\t",batch@normFactor)),file.conn
 			for(k in 1:batch@runs[[j]]@num.plates)
 			{
-				write(paste0("RUN_#",j, ":plate_#",k),file.conn, append=TRUE);
+				write(paste0("RUN_#",j, ":plate_#",k,";S Factor:",batch@runs[[j]]@plates[[k]]@normFactor),file.conn, append=TRUE);
 				#start making the data frame for output data
 				unknown<-batch@runs[[j]]@plates[[k]]@data.unknown;
 				ids<-unique(unknown$ID);
