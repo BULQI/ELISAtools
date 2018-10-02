@@ -699,6 +699,7 @@ read.plate<-function(ODs, annotation, batchID, expID)
 #'	@param batchID character the batchID read from the design file
 #'	@param expID character the expID or plateID read from the design file
 #'	@param num.plate numeric number of OD plates in the OD file. 
+#'	@param date character the date running the ELISA exps.
 #' @return a object of elisa_run holding data and annotations for 
 #'		one or multiple plates.
 #'
@@ -716,7 +717,7 @@ read.plate<-function(ODs, annotation, batchID, expID)
 # #' @seealso  \code{\link{SensorgramData-class}} \code{\link{plot}} \code{\link{SaveSPRData}}
 #'
 #'@export
-read.plates<-function(fileName, annotations, num.plate=1, batchID, expID )
+read.plates<-function(fileName, annotations, num.plate=1, batchID, expID ,date=NA_character_)
 {
 	if(missing(fileName))
 	{
@@ -765,6 +766,7 @@ read.plates<-function(fileName, annotations, num.plate=1, batchID, expID )
 	eplates@num.plates<-num.plate
 	eplates@batchID<-batchID
 	eplates@desc<-expID;
+	eplates@date<-date;
 	#OD.desc<-NULL
 	#OD.header<-NULL
 	#OD.plate<-NULL
@@ -911,9 +913,10 @@ loadData<-function(design.file)
 			    
 			ebatch@runs[[j]]<-read.plates(fileName=dfile[ind[j],]$FileName, annotations=annotations, 
 					batchID=dfile[ind[j], ]$Batch, expID=dfile[ind[j],]$ExpID,
-					num.plate=dfile[ind[j],]$Num_Plate
+					num.plate=dfile[ind[j],]$Num_Plate,date=dfile[ind[j],]$Date
 					)
 			#cat("in here")
+			#ebatch@runs[[j]]@date<-
 			if(ebatch@runs[[j]]@range.ODs[1]<range.ODs.min)
 			{
 				range.ODs.min<-ebatch@runs[[j]]@range.ODs[1];
@@ -1061,7 +1064,7 @@ saveDataText<-function(batches, file.name)
 			#write(c(paste0("R:\t",batch@batchID,"\tS Factor:\t",batch@normFactor)),file.conn
 			for(k in 1:batch@runs[[j]]@num.plates)
 			{
-				write(paste0("RUN_#",j, ":plate_#",k,";S Factor:",batch@runs[[j]]@plates[[k]]@normFactor),file.conn, append=TRUE);
+				write(paste0("RUN_#",j,"\t",batch@runs[[j]]@date, "\tplate_#",k,"\tS Factor:",batch@runs[[j]]@plates[[k]]@normFactor),file.conn, append=TRUE);
 				#start making the data frame for output data
 				unknown<-batch@runs[[j]]@plates[[k]]@data.unknown;
 				ids<-unique(unknown$ID);

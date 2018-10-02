@@ -188,7 +188,7 @@ setMethod("load.ODs", c("x"="elisa_plate"),
 #'          
 #' @param plates list of elisa_plate 
 #' @param num.plates numeric the number of plates in this run
-#'
+#'@param date character the date for running the ELISA measurements
 #' @slot batchID character
 # #' @slot expID character
 #' @slot plates list
@@ -197,6 +197,8 @@ setMethod("load.ODs", c("x"="elisa_plate"),
 # #' @slot batch.normFactor numeric
 #' @slot desc character
 #' @slot num.plates numeric
+#' @slot date character
+#' @slot range.ODs numeric 
 #' @seealso \code{\link{nls.lm}} 
 #' @examples
 #' elisa_run();
@@ -204,11 +206,11 @@ setMethod("load.ODs", c("x"="elisa_plate"),
 setClass("elisa_run",
 	representation(batchID="character",#expID="character",
 	desc="character", plates="list",
-	num.plates="numeric", range.ODs="numeric"	
+	num.plates="numeric", date="character",range.ODs="numeric"	
 	), 
 	prototype(batchID=NA_character_,#expID=NA_character_,
 	desc=NA_character_, plates=list(),
-	num.plates=1, range.ODs=c(-1,-1)
+	num.plates=0, date="NA_character_",range.ODs=c(-1,-1)
 	)
 )
 
@@ -229,7 +231,8 @@ setClass("elisa_run",
 #'          
 #' @param plates list elisa_plates in this run. could be one or multiple  
 #' @param num.plates numeric the number of plates in this run.
-#'
+#' @param date charater the date to run ELISA measurements
+#' @param range.ODs numeric the range of ODs for the measurements
 #'	@return an elisa_run object 
 #' @seealso \code{\link{nls.lm}} \code{\link{elisa_run-class}} \code{\link{elisa_plate-class}} 
 #'	
@@ -238,11 +241,11 @@ setClass("elisa_run",
 #' @export
 elisa_run<-function(batchID=NA_character_,#expID=NA_character_,
 	desc=NA_character_, plates=list(),
-	num.plates=1, range.ODs=c(-1,-1)	)
+	num.plates=1, date=NA_character_, range.ODs=c(-1,-1)	)
 {
 	return(new("elisa_run",batchID=batchID,#expID=expID,
 	desc=desc, plates=plates,
-	num.plates=num.plates, range.ODs=range.ODs))	
+	num.plates=num.plates, date=date,range.ODs=range.ODs))	
 }
 
 #'@title S4 class definition of elisa_batch

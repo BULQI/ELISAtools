@@ -663,9 +663,28 @@ reportHtml<-function(batches, file.name="report", file.dir=".", desc="")
 	if(!is.null(batches[[1]]@model.name)&&batches[[1]]@pars!=-1){
 	x<-HTML("Model Parameters:");
 	y<-{if(batches[[1]]@model.name=="5pl"){
-		x<-HTML(batches[[1]]@pars)
+		#x<-HTML("Equation 1:a+(d-a)/(1+exp((xmid-x)/scal))^g")
+		x<-HTML(batches[[1]]@pars,caption="Equatin 1:y=a+(d-a)/(1+exp((xmid-x)/scal))^g",
+				captionalign="top",nsmall=2)
 	} else { #"4pl" in this case
-		x<-HTML(batches[[1]]@pars[1:4])
+		#x<-HTML()
+		x<-HTML(batches[[1]]@pars[1:4],caption="Equation 1:y=a+(d-a)/(1+exp((xmid-x)/scal))",
+				captionalign="top",nsmall=2)
+	}};
+	###now adding the parameters for regular scale
+	y<-{if(batches[[1]]@model.name=="5pl"){
+		param_2ndform<-c(batches[[1]]@pars[c("a","d")],exp(batches[[1]]@pars["xmid"]),-1/batches[[1]]@pars["scal"],batches[[1]]@pars["g"]);
+		names(param_2ndform)<-c("D","A","C","B","g");
+		#x<-HTML()
+		x<-HTML(param_2ndform,caption="Equation 1:y=D+(A-D)/(1+(x/C)^B)^g",
+				captionalign="top",nsmall=2);
+	} else { #"4pl" in this case
+		param_2ndform<-c(batches[[1]]@pars[c("a","d")],exp(batches[[1]]@pars["xmid"]),-1/batches[[1]]@pars["scal"]);
+		names(param_2ndform)[1:4]<-c("D","A","C","B");
+		#x<-HTML(, )
+		x<-HTML(param_2ndform,caption="Equation 2: y=D+(A-D)/(1+(x/C)^B)",
+				captionalign="top",nsmall=2)
+		
 	}};
 	x<-HTML("S Factors:");
 	#make one data frame to output the s factors
@@ -700,11 +719,11 @@ reportHtml<-function(batches, file.name="report", file.dir=".", desc="")
 		#x<-HTMLhr();
 		for(j in 1:batch@num.runs)
 		{
-			x<-HTML.title(paste0("Run_#",j), HR=3);
+			x<-HTML.title(paste0("Run #",j,"\t",batch@runs[[j]]@date), HR=3);
 			x<-HTMLhr();
 			for(k in 1:batch@runs[[j]]@num.plates)
 			{
-				x<-HTML(paste0("RUN_#",j, ":plate_#",k,":S Factor:",format(batch@runs[[j]]@plates[[k]]@normFactor,digit=3,nsmall=2)));
+				x<-HTML(paste0("RUN_# ",j,"\t",batch@runs[[j]]@date, "\tplate_#",k,";\tS Factor:",format(batch@runs[[j]]@plates[[k]]@normFactor,digit=3,nsmall=2)));
 				x<-HTML(batch@runs[[j]]@plates[[k]]@data.unknown, nsmall=3, 
 						caption="Sample of Unknown concentration", captionalign="top"
 						)
