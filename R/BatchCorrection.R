@@ -647,57 +647,64 @@ reportHtml<-function(batches, file.name="report", file.dir=".", desc="")
 		extension="html", echo=F, HTMLframe=FALSE#, append=TRUE
 		)
 	x<-HTML.title("ELISA Data Analysis Tool Report", HR=1);
-	x<-{if(nchar(desc)==0){
-		desc<-paste0("ELISA batch analysis done on ",date());
-	}};
+	x<-{
+		if(nchar(desc)==0){
+			desc<-paste0("ELISA batch analysis done on ",date());
+		}
+	};
 	x<-HTML.title(desc, HR=3);
 	#summary(pars)
 	#writing fitting information and QC first
-	x<-{if(length(batches)==0)
-	{
-		data.frame("empty input data found and no analysis reported")
-		HTMLStop();
-		return(NULL);
-	}};
+	x<-{
+		if(length(batches)==0)
+		{
+			data.frame("empty input data found and no analysis reported")
+			HTMLStop();
+			return(NULL);
+		}
+	};
 	x<-HTML(data.frame(desc="Regression Model:", content=batches[[1]]@model.name));
 	if(!is.null(batches[[1]]@model.name)&&batches[[1]]@pars!=-1){
-	x<-HTML("Model Parameters:");
-	y<-{if(batches[[1]]@model.name=="5pl"){
-		#x<-HTML("Equation 1:a+(d-a)/(1+exp((xmid-x)/scal))^g")
-		x<-HTML(batches[[1]]@pars,caption="Equatin 1:y=a+(d-a)/(1+exp((xmid-x)/scal))^g",
-				captionalign="top",nsmall=2)
-	} else { #"4pl" in this case
-		#x<-HTML()
-		x<-HTML(batches[[1]]@pars[1:4],caption="Equation 1:y=a+(d-a)/(1+exp((xmid-x)/scal))",
-				captionalign="top",nsmall=2)
-	}};
-	###now adding the parameters for regular scale
-	y<-{if(batches[[1]]@model.name=="5pl"){
-		param_2ndform<-c(batches[[1]]@pars[c("a","d")],exp(batches[[1]]@pars["xmid"]),-1/batches[[1]]@pars["scal"],batches[[1]]@pars["g"]);
-		names(param_2ndform)<-c("D","A","C","B","g");
-		#x<-HTML()
-		x<-HTML(param_2ndform,caption="Equation 1:y=D+(A-D)/(1+(x/C)^B)^g",
-				captionalign="top",nsmall=2);
-	} else { #"4pl" in this case
-		param_2ndform<-c(batches[[1]]@pars[c("a","d")],exp(batches[[1]]@pars["xmid"]),-1/batches[[1]]@pars["scal"]);
-		names(param_2ndform)[1:4]<-c("D","A","C","B");
-		#x<-HTML(, )
-		x<-HTML(param_2ndform,caption="Equation 2: y=D+(A-D)/(1+(x/C)^B)",
-				captionalign="top",nsmall=2)
-		
-	}};
-	x<-HTML("S Factors:");
-	#make one data frame to output the s factors
-	bIds<-c();
-	bNfac<-c();
-	for(j in 1:length(batches))
-	{
-		batch<-batches[[j]];
-		bIds<-c(bIds,batch@batchID);
-		bNfac<-c(bNfac,batch@normFactor);
-	}
-	#dfm<-data.frame();
-	x<-HTML(data.frame("Batch"=bIds,"S_Factor"=bNfac));
+		x<-HTML("Model Parameters:");
+		y<-{
+			if(batches[[1]]@model.name=="5pl"){
+				#x<-HTML("Equation 1:a+(d-a)/(1+exp((xmid-x)/scal))^g")
+				x<-HTML(batches[[1]]@pars,caption="Equatin 1:y=a+(d-a)/(1+exp((xmid-x)/scal))^g",
+						captionalign="top",nsmall=2)
+			} else { #"4pl" in this case
+				#x<-HTML()
+				x<-HTML(batches[[1]]@pars[1:4],caption="Equation 1:y=a+(d-a)/(1+exp((xmid-x)/scal))",
+						captionalign="top",nsmall=2)
+			}
+		};
+		###now adding the parameters for regular scale
+		y<-{
+			if(batches[[1]]@model.name=="5pl"){
+				param_2ndform<-c(batches[[1]]@pars[c("a","d")],exp(batches[[1]]@pars["xmid"]),-1/batches[[1]]@pars["scal"],batches[[1]]@pars["g"]);
+				names(param_2ndform)<-c("D","A","C","B","g");
+				#x<-HTML()
+				x<-HTML(param_2ndform,caption="Equation 1:y=D+(A-D)/(1+(x/C)^B)^g",
+						captionalign="top",nsmall=2);
+			} else { #"4pl" in this case
+				param_2ndform<-c(batches[[1]]@pars[c("a","d")],exp(batches[[1]]@pars["xmid"]),-1/batches[[1]]@pars["scal"]);
+				names(param_2ndform)[1:4]<-c("D","A","C","B");
+				#x<-HTML(, )
+				x<-HTML(param_2ndform,caption="Equation 2: y=D+(A-D)/(1+(x/C)^B)",
+						captionalign="top",nsmall=2)
+				
+			}
+		};
+		x<-HTML("S Factors:");
+		#make one data frame to output the s factors
+		bIds<-c();
+		bNfac<-c();
+		for(j in 1:length(batches)){
+			batch<-batches[[j]];
+			bIds<-c(bIds,batch@batchID);
+			bNfac<-c(bNfac,batch@normFactor);
+		}
+			#dfm<-data.frame();
+		x<-HTML(data.frame("Batch"=bIds,"S_Factor"=bNfac));
 	}
 	x<-HTMLhr();
 	x<-HTML.title("Model fitting QC", HR=3);
@@ -724,9 +731,12 @@ reportHtml<-function(batches, file.name="report", file.dir=".", desc="")
 			for(k in 1:batch@runs[[j]]@num.plates)
 			{
 				x<-HTML(paste0("RUN_# ",j,"\t",batch@runs[[j]]@date, "\tplate_#",k,";\tS Factor:",format(batch@runs[[j]]@plates[[k]]@normFactor,digit=3,nsmall=2)));
-				x<-HTML(batch@runs[[j]]@plates[[k]]@data.unknown, nsmall=3, 
-						caption="Sample of Unknown concentration", captionalign="top"
-						)
+				if(!is.null(batch@runs[[j]]@plates[[k]]@data.unknown)&&dim(batch@runs[[j]]@plates[[k]]@data.unknown)[1]!=0)
+				{
+					x<-HTML(batch@runs[[j]]@plates[[k]]@data.unknown, nsmall=3, 
+							caption="Sample of Unknown concentration", captionalign="top"
+							)
+				}
 				if(!is.null(batch@runs[[j]]@plates[[k]]@mdata.unknown)&&dim(batch@runs[[j]]@plates[[k]]@mdata.unknown)[1]!=0)
 				{
 					x<-HTML(batch@runs[[j]]@plates[[k]]@mdata.unknown, nsmall=3, 

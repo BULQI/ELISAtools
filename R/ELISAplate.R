@@ -158,8 +158,10 @@ setMethod("load.ODs", c("x"="elisa_plate"),
 			rowSym<-c("A","B","C","D","E","F","G","H");
 			ind<-paste0(rowSym[annotation$standards$row],annotation$standards$col)
 			x@data.std<-cbind(x@data.std,"OD"=plate.data[ind])
-			ind<-paste0(rowSym[annotation$unknowns$row],annotation$unknown$col);
-			x@data.unknown<-cbind(x@data.unknown, "OD"=plate.data[ind]);
+			if(!is.null(annotation$unknowns)&&dim(annotation$unknowns)[1]!=0){
+				ind<-paste0(rowSym[annotation$unknowns$row],annotation$unknown$col);
+				x@data.unknown<-cbind(x@data.unknown, "OD"=plate.data[ind]);
+			}
 			#cat("====done");
 			return(x)
 		}#end of function
@@ -376,21 +378,24 @@ predictBatchData<-function(batch)
 			count<-count+1;
 			#get the model
 			pars.plate<-pars+c(0,0,-1*batch@runs[[i]]@plates[[j]]@normFactor,0,0)
-			x.expect<-inv.f5pl(pars.plate, batch@runs[[i]]@plates[[j]]@data.unknown$OD);
-			batch@runs[[i]]@plates[[j]]@data.unknown$conc_pred<-x.expect;
-			batch@runs[[i]]@plates[[j]]@data.unknown$conc_pred.bc<-x.expect*exp(batchNormFac);
 			
-			#doing 
-			dF<-aggregate(batch@runs[[i]]@plates[[j]]@data.unknown$OD, 
-					by=list(group=batch@runs[[i]]@plates[[j]]@data.unknown$ID), FUN=mean);
-			
-			x.expect<-inv.f5pl(pars.plate, dF$x);
-			dF$conc_pred<-x.expect
-			dF$conc_pred.bc<-x.expect*exp(batchNormFac);
-			dF<-dF[,c("group","x","conc_pred","conc_pred.bc")]
-			names(dF)<-c("ID","OD","conc_pred","conc_pred.bc")
-			batch@runs[[i]]@plates[[j]]@mdata.unknown<-dF;
-			
+			#for doing unknows
+			if(!is.null(batch@runs[[i]]@plates[[j]]@data.unknown)&& dim(batch@runs[[i]]@plates[[j]]@data.unknown)[1]!=0){
+				x.expect<-inv.f5pl(pars.plate, batch@runs[[i]]@plates[[j]]@data.unknown$OD);
+				batch@runs[[i]]@plates[[j]]@data.unknown$conc_pred<-x.expect;
+				batch@runs[[i]]@plates[[j]]@data.unknown$conc_pred.bc<-x.expect*exp(batchNormFac);
+				
+				#doing 
+				dF<-aggregate(batch@runs[[i]]@plates[[j]]@data.unknown$OD, 
+						by=list(group=batch@runs[[i]]@plates[[j]]@data.unknown$ID), FUN=mean);
+				
+				x.expect<-inv.f5pl(pars.plate, dF$x);
+				dF$conc_pred<-x.expect
+				dF$conc_pred.bc<-x.expect*exp(batchNormFac);
+				dF<-dF[,c("group","x","conc_pred","conc_pred.bc")]
+				names(dF)<-c("ID","OD","conc_pred","conc_pred.bc")
+				batch@runs[[i]]@plates[[j]]@mdata.unknown<-dF;
+			}
 			#--now add the predications for standard table
 			stdx.expect<-inv.f5pl(pars.plate, batch@runs[[i]]@plates[[j]]@data.std$OD);
 			batch@runs[[i]]@plates[[j]]@data.std$conc_pred<-stdx.expect;

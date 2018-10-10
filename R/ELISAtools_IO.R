@@ -424,8 +424,13 @@ read.annotation<-function(annotation,  std.conc)
 			}
 		} 
 	}
-	class(annotations.std$col)="integer";
-	class(annotations.unknown$col)="integer"; 
+	if(is.null(annotations.unknown)){
+		annotations.unknown<-data.frame();
+	}else{
+		
+		class(annotations.unknown$col)<-"integer"; 
+	}
+	class(annotations.std$col)<-"integer";
 	list(standards=annotations.std, unknowns=annotations.unknown)
 }
 #
@@ -606,8 +611,8 @@ read.plate<-function(ODs, annotation, batchID, expID)
 	{
 		stop("ERROR: the input annotation is not in correct format")
 	}
-	if(is.null(annotation$unknowns)||class(annotation$unknowns)!="data.frame")
-	{
+	if(!is.null(annotation$unknowns)&&class(annotation$unknowns)!="data.frame")
+	{#could be null, meaning no unknowns
 		stop("ERROR: the input annotation is not in correct format")
 	}
 	
@@ -1065,8 +1070,13 @@ saveDataText<-function(batches, file.name)
 			for(k in 1:batch@runs[[j]]@num.plates)
 			{
 				write(paste0("RUN_#",j,"\t",batch@runs[[j]]@date, "\tplate_#",k,"\tS Factor:",batch@runs[[j]]@plates[[k]]@normFactor),file.conn, append=TRUE);
+				
+				suppressWarnings(write.table(batch@runs[[j]]@plates[[k]]@mdata.std,file=file.conn,append=T,sep="\t", row.names = F))
 				#start making the data frame for output data
 				unknown<-batch@runs[[j]]@plates[[k]]@data.unknown;
+				if(is.null(unknown)||dim(unknown)[1]==0){
+					next;
+				}
 				ids<-unique(unknown$ID);
 				#determine the number repeats 
 				nRep<-max(aggregate(unknown, FUN=length,by=list(unknown$ID))$ID)
@@ -1104,7 +1114,6 @@ saveDataText<-function(batches, file.name)
 			
 				#now save the data
 				suppressWarnings(write.table(dfm,file=file.conn,append=T,sep="\t", row.names = F))
-				suppressWarnings(write.table(batch@runs[[j]]@plates[[k]]@mdata.std,file=file.conn,append=T,sep="\t", row.names = F))
 				write("\n",file.conn, append=T);
 			}
 		}
