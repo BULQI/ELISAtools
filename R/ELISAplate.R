@@ -595,7 +595,9 @@ resetElisaBatchAnalysis<-function(b)
 			b@runs[[i]]@plates[[j]]@normFactor<-NaN
 			b@runs[[i]]@plates[[j]]@data.std<-b@runs[[i]]@plates[[j]]@data.std[,c("ID","row","col","conc","OD")]
 			b@runs[[i]]@plates[[j]]@mdata.std<-data.frame();#b@runs[[i]]@plates[[j]]@data.std[,c("ID","conc","OD")]
-			b@runs[[i]]@plates[[j]]@data.unknown<-b@runs[[i]]@plates[[j]]@data.unknown[,c("ID","row","col","OD")]
+			if(!is.null(b@runs[[i]]@plates[[j]]@data.unknown)&&dim(b@runs[[i]]@plates[[j]]@data.unknown)[1]!=0){
+				b@runs[[i]]@plates[[j]]@data.unknown<-b@runs[[i]]@plates[[j]]@data.unknown[,c("ID","row","col","OD")];
+			}	
 			b@runs[[i]]@plates[[j]]@mdata.unknown<-data.frame();#b@runs[[i]]@plates[[j]]@data.std[,c("ID","conc","OD")]
 		}
 	}
