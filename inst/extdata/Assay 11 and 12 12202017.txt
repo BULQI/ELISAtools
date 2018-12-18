@@ -1,0 +1,344 @@
+##BLOCKS= 10																																																																																																	
+Plate:	Plate1	1.3	TimeFormat	Endpoint	Absorbance	Raw	FALSE	1						2	450 620 	1	12	96	1	8																																																																													
+	Temperature(¡C)	A1	A2	A3	A4	A5	A6	A7	A8	A9	A10	A11	A12	B1	B2	B3	B4	B5	B6	B7	B8	B9	B10	B11	B12	C1	C2	C3	C4	C5	C6	C7	C8	C9	C10	C11	C12	D1	D2	D3	D4	D5	D6	D7	D8	D9	D10	D11	D12	E1	E2	E3	E4	E5	E6	E7	E8	E9	E10	E11	E12	F1	F2	F3	F4	F5	F6	F7	F8	F9	F10	F11	F12	G1	G2	G3	G4	G5	G6	G7	G8	G9	G10	G11	G12	H1	H2	H3	H4	H5	H6	H7	H8	H9	H10	H11	H12
+	23.1	1.9205	1.9372	1.8703	0.0693	0.0684	0.0701	0.0886	0.0736	0.0717	0.0772	0.0718	0.0708	2.5528	2.3898	2.3674	0.085	0.0852	0.0882	0.1756	0.1521	0.1698	0.1937	0.1257	0.0807	1.1578	1.1378	1.2202	0.1105	0.1081	0.1098	0.1829	0.1691	0.1797	0.197	0.1288	0.0985	0.6885	0.7254	0.7192	0.1313	0.1175	0.1125	0.0918	0.0912	0.1034	0.2175	0.1462	0.0918	0.3719	0.3992	0.4319	0.0828	0.0858	0.0851	0.103	0.0967	0.0967	0.1267	0.8917	0.0789	0.2136	0.2276	0.2362	0.087	0.0827	0.0858	0.1319	0.127	0.1356	0.1336	0.8724	0.0813	0.1465	0.146	0.1567	0.0934	0.0897	0.1008	0.1571	0.1556	0.1579	0.1331	0.7931	0.0784	0.0864	0.0681	0.0667	0.0686	0.0697	0.0675	0.0688	0.0699	0.0772	0.0696	0.0688	0.0712
+																																																																																																	
+	23.1	0.0389	0.0385	0.0369	0.0347	0.0351	0.0356	0.036	0.0358	0.0359	0.0404	0.0358	0.0361	0.0402	0.0409	0.0397	0.0366	0.0367	0.0366	0.0374	0.0371	0.0373	0.0369	0.0373	0.0395	0.0385	0.0371	0.0374	0.0355	0.0356	0.0356	0.037	0.0365	0.0365	0.0369	0.0368	0.039	0.0364	0.0373	0.0361	0.0414	0.0352	0.0355	0.0359	0.0368	0.0367	0.0366	0.0363	0.0376	0.0372	0.0353	0.0359	0.0358	0.0346	0.0345	0.0359	0.0362	0.0347	0.0347	0.036	0.0355	0.036	0.0358	0.0357	0.0351	0.0352	0.0351	0.0351	0.0356	0.0353	0.0376	0.0359	0.0372	0.0368	0.0345	0.0354	0.0349	0.0339	0.0351	0.0349	0.0377	0.0348	0.035	0.0383	0.0391	0.0353	0.0355	0.0366	0.0352	0.0349	0.0347	0.0353	0.0358	0.0364	0.0361	0.0359	0.0369
+																																																																																																	
+~End																																																																																																	
+Group: Standards																																																																																																	
+Sample	Concentration pg/mL	BackCalcConc	Wells	Value	MeanValue	SD	CV																																																																																										
+1	3000	3487.873	B1	2.513	2.396	0.101	4.2																																																																																										
+ 	 	2739.726	B2	2.349	 	 	 																																																																																										
+ 	 	2662.158	B3	2.328	 	 	 																																																																																										
+2	1500	1569.251	A1	1.882	1.89	0.012	0.6																																																																																										
+ 	 	1598.632	A2	1.899	 	 	 																																																																																										
+ 	 	Masked	A3	Masked	 	 	 																																																																																										
+3	750	692.343	C1	1.119	1.134	0.043	3.8																																																																																										
+ 	 	677.529	C2	1.101	 	 	 																																																																																										
+ 	 	744.448	C3	1.183	 	 	 																																																																																										
+4	375	367.276	D1	0.652	0.674	0.02	2.9																																																																																										
+ 	 	389.561	D2	0.688	 	 	 																																																																																										
+ 	 	386.446	D3	0.683	 	 	 																																																																																										
+5	187.5	181.396	E1	0.335	0.365	0.031	8.4																																																																																										
+ 	 	198.049	E2	0.364	 	 	 																																																																																										
+ 	 	216.382	E3	0.396	 	 	 																																																																																										
+6	93.75	90.283	F1	0.178	0.19	0.012	6.1																																																																																										
+ 	 	98.785	F2	0.192	 	 	 																																																																																										
+ 	 	103.949	F3	0.2	 	 	 																																																																																										
+7	46.875	47.573	G1	0.11	0.114	0.006	5.5																																																																																										
+ 	 	48.773	G2	0.111	 	 	 																																																																																										
+ 	 	55.221	G3	0.121	 	 	 																																																																																										
+8	0	Masked	H1	Masked	0.031	0.002	5.6																																																																																										
+ 	 	Range?	H2	0.033	 	 	 																																																																																										
+ 	 	Range?	H3	0.03	 	 	 																																																																																										
+																																																																																																	
+Group Column	Formula Name	Formula	Precision	Notation																																																																																													
+1	Sample	!SampleNames	2 decimal places	Numeric																																																																																													
+2	Concentration	!SampleDescriptor	3 decimal places	Numeric																																																																																													
+3	BackCalcConc	"InterpX(Std@StandardCurve,Value)"	3 decimal places	Numeric																																																																																													
+4	Wells	!WellIDs	2 decimal places	Numeric																																																																																													
+5	Value	!WellValues	3 decimal places	Numeric																																																																																													
+6	MeanValue	Average(Value)	3 decimal places	Numeric																																																																																													
+7	SD	Stdev(Value)	3 decimal places	Numeric																																																																																													
+8	CV	Cv(Value)	1 decimal places	Numeric																																																																																													
+																																																																																																	
+Group Summaries																																																																																																	
+MinStd	Smallest standard value:	0.031	Min(MeanValue)	3 decimal places	Numeric Notation 																																																																																												
+MaxStd	Largest standard value:	2.396	Max(MeanValue)	3 decimal places	Numeric Notation 																																																																																												
+~End 																																																																																																	
+Group: Unknowns																																																																																																	
+Sample	Wells	Value	R	Result	MeanResult	SD	CV																																																																																										
+Blank Wells Diluent Only	A4	0.035		Range?	5.665	3.757	66.3																																																																																										
+ 	A5	0.033		Range?	 	 	 																																																																																										
+ 	A6	0.034		Range?	 	 	 																																																																																										
+ 	A7	0.053		2.619	 	 	 																																																																																										
+ 	A8	0.038		Range?	 	 	 																																																																																										
+ 	A9	0.036		Range?	 	 	 																																																																																										
+ 	A10	0.037		Range?	 	 	 																																																																																										
+ 	A11	0.036		Range?	 	 	 																																																																																										
+ 	A12	0.035		Range?	 	 	 																																																																																										
+ 	B12	0.041		Range?	 	 	 																																																																																										
+ 	C12	0.06		9.863	 	 	 																																																																																										
+ 	D12	0.054		4.514	 	 	 																																																																																										
+ 	E12	0.043		Range?	 	 	 																																																																																										
+ 	F12	0.044		Range?	 	 	 																																																																																										
+ 	G12	0.039		Range?	 	 	 																																																																																										
+ 	H4	0.033		Range?	 	 	 																																																																																										
+ 	H5	0.035		Range?	 	 	 																																																																																										
+ 	H6	0.033		Range?	 	 	 																																																																																										
+ 	H7	0.034		Range?	 	 	 																																																																																										
+ 	H8	0.034		Range?	 	 	 																																																																																										
+ 	H9	0.041		Range?	 	 	 																																																																																										
+ 	H10	0.033		Range?	 	 	 																																																																																										
+ 	H11	0.033		Range?	 	 	 																																																																																										
+ 	H12	0.034		Range?	 	 	 																																																																																										
+																																																																																																	
+Group Column	Formula Name	Formula	Precision	Notation																																																																																													
+1	Sample	!SampleNames	2 decimal places	Numeric																																																																																													
+2	Wells	!WellIDs	2 decimal places	Numeric																																																																																													
+3	Value	!WellValues	3 decimal places	Numeric																																																																																													
+4	R	"If (Value>=MinStd@Standards and Value<=MaxStd@Standards,"""",""R"")"	3 decimal places	Numeric																																																																																													
+5	Result	"InterpX(Std@StandardCurve,Value)"	3 decimal places	Numeric																																																																																													
+6	MeanResult	Average(Result)	3 decimal places	Numeric																																																																																													
+7	SD	Stdev(Result)	3 decimal places	Numeric																																																																																													
+8	CV	Cv(Result)	1 decimal places	Numeric																																																																																													
+																																																																																																	
+Group Summaries																																																																																																	
+InRange	R - Outside standard range			0 decimal places	Numeric Notation 																																																																																												
+~End 																																																																																																	
+Group: Unk_Dilution																																																																																																	
+Sample	Wells	Value	R	Result	MeanResult	SD	CV	Dilution	AdjResult																																																																																								
+P1	B4	0.048		Range?	1.252	0	0	10	12.525																																																																																								
+ 	B5	0.048		Range?	 	 	 	 	 																																																																																								
+ 	B6	0.052		1.252	 	 	 	 	 																																																																																								
+P2	E4	0.047		Range?	0.603	0	0	10	6.035																																																																																								
+ 	E5	0.051		0.603	 	 	 	 	 																																																																																								
+ 	E6	0.051		Range?	 	 	 	 	 																																																																																								
+P3	C4	0.075		22.866	22.006	1	4.5	10	220.057																																																																																								
+ 	C5	0.073		20.908	 	 	 	 	 																																																																																								
+ 	C6	0.074		22.243	 	 	 	 	 																																																																																								
+P4	F4	0.052		1.688	1.688	0	0	10	16.883																																																																																								
+ 	F5	0.047		Range?	 	 	 	 	 																																																																																								
+ 	F6	0.051		Range?	 	 	 	 	 																																																																																								
+P5	D4	0.09		33.921	28.908	4.778	16.5	10	289.078																																																																																								
+ 	D5	0.082		28.395	 	 	 	 	 																																																																																								
+ 	D6	0.077		24.407	 	 	 	 	 																																																																																								
+P6	G4	0.058		8.918	7.576	1.898	25	10	75.76																																																																																								
+ 	G5	0.056		6.234	 	 	 	 	 																																																																																								
+ 	G6	Masked	R	Masked	 	 	 	 	 																																																																																								
+P7	D7	0.056		6.338	5.537	1.133	20.5	10	55.37																																																																																								
+ 	D8	0.054		4.736	 	 	 	 	 																																																																																								
+ 	D9	Masked	R	Masked	 	 	 	 	 																																																																																								
+P8	B7	0.138		66.044	59.856	7.801	13	10	598.556																																																																																								
+ 	B8	0.115		51.093	 	 	 	 	 																																																																																								
+ 	B9	0.133		62.43	 	 	 	 	 																																																																																								
+P9	E7	0.067		16.531	13.154	3.001	22.8	10	131.545																																																																																								
+ 	E8	0.06		10.789	 	 	 	 	 																																																																																								
+ 	E9	0.062		12.144	 	 	 	 	 																																																																																								
+P10	C7	0.146		70.875	67.519	4.433	6.6	10	675.187																																																																																								
+ 	C8	0.133		62.494	 	 	 	 	 																																																																																								
+ 	C9	0.143		69.187	 	 	 	 	 																																																																																								
+P11	F7	0.097		38.783	38.325	3.132	8.2	10	383.252																																																																																								
+ 	F8	0.091		34.99	 	 	 	 	 																																																																																								
+ 	F9	0.1		41.203	 	 	 	 	 																																																																																								
+P12	E10	0.092		35.415	37.775	2.17	5.7	10	377.754																																																																																								
+ 	F10	0.096		38.226	 	 	 	 	 																																																																																								
+ 	G10	0.098		39.685	 	 	 	 	 																																																																																								
+P13	G7	0.122		55.806	55.066	1.812	3.3	10	550.656																																																																																								
+ 	G8	0.118		53	 	 	 	 	 																																																																																								
+ 	G9	0.123		56.39	 	 	 	 	 																																																																																								
+P14	B11	0.088		32.846	34.131	1.816	5.3	10	341.306																																																																																								
+ 	C11	0.092		35.415	 	 	 	 	 																																																																																								
+ 	D11	Masked	R	Masked	 	 	 	 	 																																																																																								
+P15	B10	0.157		77.628	83.183	7.932	9.5	10	831.832																																																																																								
+ 	C10	0.16		79.654	 	 	 	 	 																																																																																								
+ 	D10	0.181		92.268	 	 	 	 	 																																																																																								
+																																																																																																	
+Group Column	Formula Name	Formula	Precision	Notation																																																																																													
+1	Sample	!SampleNames	2 decimal places	Numeric																																																																																													
+2	Wells	!WellIDs	2 decimal places	Numeric																																																																																													
+3	Value	!WellValues	3 decimal places	Numeric																																																																																													
+4	R	"If (Value>=MinStd@Standards and Value<=MaxStd@Standards,"""",""R"")"	3 decimal places	Numeric																																																																																													
+5	Result	"InterpX(Std@StandardCurve,Value)"	3 decimal places	Numeric																																																																																													
+6	MeanResult	Average(Result)	3 decimal places	Numeric																																																																																													
+7	SD	Stdev(Result)	3 decimal places	Numeric																																																																																													
+8	CV	Cv(Result)	1 decimal places	Numeric																																																																																													
+9	Dilution	!Factor	1 decimal places	Numeric																																																																																													
+10	AdjResult	MeanResult*!Factor	3 decimal places	Numeric																																																																																													
+																																																																																																	
+Group Summaries																																																																																																	
+InRange	R - Outside standard range			0 decimal places	Numeric Notation 																																																																																												
+MeanResult	Mean Adjusted Result:	304.39	Average(AdjResult)	2 decimal places	Numeric Notation 																																																																																												
+~End 																																																																																																	
+Group: Control																																																																																																	
+Sample	Wells	Sample#	Values	MeanValue	Results	Mean	SD	CV																																																																																									
+1	E11	1	0.856	0.816	498.43	471.906	35.323	7.485																																																																																									
+ 	F11	 	0.836	 	485.478	 	 	 																																																																																									
+ 	G11	 	0.755	 	431.81	 	 	 																																																																																									
+																																																																																																	
+Group Column	Formula Name	Formula	Precision	Notation																																																																																													
+1	Sample	!SampleNames	2 decimal places	Numeric																																																																																													
+2	Wells	!WellIDs	2 decimal places	Numeric																																																																																													
+3	Sample#	Index	0 decimal places	Numeric																																																																																													
+4	Values	!WellValues	3 decimal places	Numeric																																																																																													
+5	MeanValue	Average(Values)	3 decimal places	Numeric																																																																																													
+6	Results	"InterpX(Std@StandardCurve,Values)"	3 decimal places	Numeric																																																																																													
+7	Mean	Average(Results)	3 decimal places	Numeric																																																																																													
+8	SD	Stdev(Results)	3 decimal places	Numeric																																																																																													
+9	CV	Cv(Results)	3 decimal places	Numeric																																																																																													
+																																																																																																	
+Group Summaries																																																																																																	
+~End 																																																																																																	
+Plate:	Plate1	1.3	TimeFormat	Endpoint	Absorbance	Raw	FALSE	1						2	450 620 	1	12	96	1	8																																																																													
+	Temperature(¡C)	A1	A2	A3	A4	A5	A6	A7	A8	A9	A10	A11	A12	B1	B2	B3	B4	B5	B6	B7	B8	B9	B10	B11	B12	C1	C2	C3	C4	C5	C6	C7	C8	C9	C10	C11	C12	D1	D2	D3	D4	D5	D6	D7	D8	D9	D10	D11	D12	E1	E2	E3	E4	E5	E6	E7	E8	E9	E10	E11	E12	F1	F2	F3	F4	F5	F6	F7	F8	F9	F10	F11	F12	G1	G2	G3	G4	G5	G6	G7	G8	G9	G10	G11	G12	H1	H2	H3	H4	H5	H6	H7	H8	H9	H10	H11	H12
+	23.4	2.0766	2.5072	2.572	0.0751	0.0673	0.0698	0.0685	0.0702	0.0709	0.0726	0.0706	0.072	1.5162	1.6284	1.7195	0.1237	0.1152	0.1209	0.1638	0.161	0.1549	0.431	0.223	0.0771	1.1454	1.1498	1.2086	0.2694	0.2706	0.2783	0.2182	0.2046	0.2383	0.4294	0.2238	0.0706	0.6184	0.6966	0.7137	0.0789	0.0716	0.0739	0.1423	0.1406	0.1597	0.4437	0.2141	0.0729	0.3209	0.3927	0.4266	0.129	0.1536	0.1471	0.1514	0.1382	0.1569	0.2129	0.8689	0.0753	0.2158	0.2414	0.2458	0.1445	0.1412	0.1641	0.2535	0.2114	0.2393	0.23	0.9865	0.0709	0.1519	0.1497	0.1472	0.1399	0.1362	0.1449	0.3841	0.391	0.446	0.241	0.8955	0.0754	0.0991	0.0685	0.0713	0.0725	0.0676	0.0721	0.0695	0.0684	0.0707	0.0719	0.0677	0.0735
+																																																																																																	
+	23.4	0.0394	0.0409	0.0392	0.0358	0.0353	0.0353	0.0357	0.0366	0.0357	0.0358	0.0356	0.036	0.0393	0.0399	0.0377	0.0365	0.0368	0.0367	0.0369	0.0369	0.0371	0.0371	0.0378	0.0381	0.0365	0.0365	0.0361	0.0351	0.0356	0.0356	0.0358	0.036	0.0363	0.0362	0.0376	0.0365	0.0354	0.0359	0.0362	0.0352	0.0353	0.0355	0.0361	0.0361	0.0367	0.0361	0.0361	0.0364	0.0357	0.0359	0.0354	0.0348	0.0435	0.0349	0.0347	0.0348	0.0345	0.0347	0.0356	0.0351	0.0359	0.035	0.0358	0.0349	0.0351	0.0357	0.0349	0.035	0.0352	0.0357	0.0356	0.035	0.0347	0.0345	0.0379	0.0352	0.0339	0.0338	0.035	0.0349	0.0353	0.0351	0.037	0.0385	0.0506	0.0352	0.0358	0.0358	0.0355	0.0404	0.0356	0.0353	0.0368	0.0352	0.0352	0.0372
+																																																																																																	
+~End																																																																																																	
+Group: Standards																																																																																																	
+Sample	Concentration pg/mL	BackCalcConc	Wells	Value	MeanValue	SD	CV																																																																																										
+1	3000	2244.924	A1	2.037	2.345	0.269	11.5																																																																																										
+ 	 	3444.685	A2	2.466	 	 	 																																																																																										
+ 	 	3684.386	A3	2.533	 	 	 																																																																																										
+2	1500	1249.267	B1	1.477	1.582	0.103	6.5																																																																																										
+ 	 	1412.447	B2	1.589	 	 	 																																																																																										
+ 	 	1560.496	B3	1.682	 	 	 																																																																																										
+3	750	799.74	C1	1.109	1.132	0.036	3.1																																																																																										
+ 	 	804.428	C2	1.113	 	 	 																																																																																										
+ 	 	868.963	C3	1.172	 	 	 																																																																																										
+4	375	332.447	D1	0.583	0.64	0.05	7.9																																																																																										
+ 	 	391.129	D2	0.661	 	 	 																																																																																										
+ 	 	404.244	D3	0.677	 	 	 																																																																																										
+5	187.5	135.953	E1	0.285	0.344	0.054	15.7																																																																																										
+ 	 	179.198	E2	0.357	 	 	 																																																																																										
+ 	 	200.869	E3	0.391	 	 	 																																																																																										
+6	93.75	77.058	F1	0.18	0.199	0.016	8.3																																																																																										
+ 	 	91.331	F2	0.206	 	 	 																																																																																										
+ 	 	93.299	F3	0.21	 	 	 																																																																																										
+7	46.875	44.914	G1	0.117	0.114	0.004	3.6																																																																																										
+ 	 	43.93	G2	0.115	 	 	 																																																																																										
+ 	 	41.043	G3	0.109	 	 	 																																																																																										
+8	0	Masked	H1	Masked	0.034	0.002	4.5																																																																																										
+ 	 	6.632	H2	0.033	 	 	 																																																																																										
+ 	 	7.524	H3	0.036	 	 	 																																																																																										
+																																																																																																	
+Group Column	Formula Name	Formula	Precision	Notation																																																																																													
+1	Sample	!SampleNames	2 decimal places	Numeric																																																																																													
+2	Concentration	!SampleDescriptor	3 decimal places	Numeric																																																																																													
+3	BackCalcConc	"InterpX(Std@StandardCurve,Value)"	3 decimal places	Numeric																																																																																													
+4	Wells	!WellIDs	2 decimal places	Numeric																																																																																													
+5	Value	!WellValues	3 decimal places	Numeric																																																																																													
+6	MeanValue	Average(Value)	3 decimal places	Numeric																																																																																													
+7	SD	Stdev(Value)	3 decimal places	Numeric																																																																																													
+8	CV	Cv(Value)	1 decimal places	Numeric																																																																																													
+																																																																																																	
+Group Summaries																																																																																																	
+MinStd	Smallest standard value:	0.034	Min(MeanValue)	3 decimal places	Numeric Notation 																																																																																												
+MaxStd	Largest standard value:	2.345	Max(MeanValue)	3 decimal places	Numeric Notation 																																																																																												
+~End 																																																																																																	
+Group: Unknowns																																																																																																	
+Sample	Wells	Value	R	Result	MeanResult	SD	CV																																																																																										
+Blank Wells Diluent Only	A4	0.039		9.088	7.602	1.152	15.2																																																																																										
+ 	A5	0.032	R	6.11	 	 	 																																																																																										
+ 	A6	0.035		7.118	 	 	 																																																																																										
+ 	A7	0.033	R	6.431	 	 	 																																																																																										
+ 	A8	0.034	R	6.753	 	 	 																																																																																										
+ 	A9	0.035		7.402	 	 	 																																																																																										
+ 	A10	0.037		8.056	 	 	 																																																																																										
+ 	A11	0.035		7.321	 	 	 																																																																																										
+ 	A12	0.036		7.729	 	 	 																																																																																										
+ 	B12	0.039		8.964	 	 	 																																																																																										
+ 	C12	0.034	R	6.956	 	 	 																																																																																										
+ 	D4	0.044		10.932	 	 	 																																																																																										
+ 	D5	0.036		7.851	 	 	 																																																																																										
+ 	D6	0.038		8.716	 	 	 																																																																																										
+ 	D12	0.037		7.933	 	 	 																																																																																										
+ 	E12	0.04		9.463	 	 	 																																																																																										
+ 	F12	0.036		7.688	 	 	 																																																																																										
+ 	G12	0.037		8.097	 	 	 																																																																																										
+ 	H4	0.037		8.015	 	 	 																																																																																										
+ 	H5	0.032	R	6.15	 	 	 																																																																																										
+ 	H6	0.032	R	5.99	 	 	 																																																																																										
+ 	H7	0.034	R	6.875	 	 	 																																																																																										
+ 	H8	0.033	R	6.552	 	 	 																																																																																										
+ 	H9	0.034	R	6.875	 	 	 																																																																																										
+ 	H10	0.037		8.015	 	 	 																																																																																										
+ 	H11	0.032	R	6.311	 	 	 																																																																																										
+ 	H12	0.036		7.851	 	 	 																																																																																										
+																																																																																																	
+Group Column	Formula Name	Formula	Precision	Notation																																																																																													
+1	Sample	!SampleNames	2 decimal places	Numeric																																																																																													
+2	Wells	!WellIDs	2 decimal places	Numeric																																																																																													
+3	Value	!WellValues	3 decimal places	Numeric																																																																																													
+4	R	"If (Value>=MinStd@Standards and Value<=MaxStd@Standards,"""",""R"")"	3 decimal places	Numeric																																																																																													
+5	Result	"InterpX(Std@StandardCurve,Value)"	3 decimal places	Numeric																																																																																													
+6	MeanResult	Average(Result)	3 decimal places	Numeric																																																																																													
+7	SD	Stdev(Result)	3 decimal places	Numeric																																																																																													
+8	CV	Cv(Result)	1 decimal places	Numeric																																																																																													
+																																																																																																	
+Group Summaries																																																																																																	
+InRange	R - Outside standard range			0 decimal places	Numeric Notation 																																																																																												
+~End 																																																																																																	
+Group: Unk_Dilution																																																																																																	
+Sample	Wells	Value	R	Result	MeanResult	SD	CV	Dilution	AdjResult																																																																																								
+P1	B4	0.087		30.458	28.621	2.086	7.3	10	286.21																																																																																								
+ 	B5	0.078		26.353	 	 	 	 	 																																																																																								
+ 	B6	0.084		29.051	 	 	 	 	 																																																																																								
+P2	E4	0.094		33.77	39.221	4.748	12.1	10	392.206																																																																																								
+ 	E5	0.11		41.433	 	 	 	 	 																																																																																								
+ 	E6	0.112		42.459	 	 	 	 	 																																																																																								
+P3	C4	0.234		106.764	108.471	2.623	2.4	10	1084.706																																																																																								
+ 	C5	0.235		107.157	 	 	 	 	 																																																																																								
+ 	C6	0.243		111.491	 	 	 	 	 																																																																																								
+P4	F4	0.11		41.189	43.718	5.914	13.5	10	437.175																																																																																								
+ 	F5	0.106		39.488	 	 	 	 	 																																																																																								
+ 	F6	0.128		50.476	 	 	 	 	 																																																																																								
+P5	G4	0.105		38.809	39.46	2.209	5.6	10	394.602																																																																																								
+ 	G5	0.102		37.65	 	 	 	 	 																																																																																								
+ 	G6	0.111		41.921	 	 	 	 	 																																																																																								
+P6	D7	0.106		39.536	42.011	5.017	11.9	10	420.108																																																																																								
+ 	D8	0.105		38.713	 	 	 	 	 																																																																																								
+ 	D9	0.123		47.784	 	 	 	 	 																																																																																								
+P7	B7	0.127		49.726	47.756	2.312	4.8	10	477.556																																																																																								
+ 	B8	0.124		48.331	 	 	 	 	 																																																																																								
+ 	B9	0.118		45.21	 	 	 	 	 																																																																																								
+P8	E7	0.117		44.668	43.445	4.772	11	10	434.449																																																																																								
+ 	E8	0.103		38.181	 	 	 	 	 																																																																																								
+ 	E9	0.122		47.486	 	 	 	 	 																																																																																								
+P9	C7	0.182		78.388	79.471	8.971	11.3	10	794.714																																																																																								
+ 	C8	0.169		71.091	 	 	 	 	 																																																																																								
+ 	C9	0.202		88.935	 	 	 	 	 																																																																																								
+P10	F7	0.219		98.029	87.77	11.587	13.2	10	877.695																																																																																								
+ 	F8	0.176		75.202	 	 	 	 	 																																																																																								
+ 	F9	0.204		90.077	 	 	 	 	 																																																																																								
+P11	E10	0.178		76.156	83.993	7.481	8.9	10	839.935																																																																																								
+ 	F10	0.194		84.766	 	 	 	 	 																																																																																								
+ 	G10	0.206		91.058	 	 	 	 	 																																																																																								
+P12	G7	0.349		174.426	188.866	21.366	11.3	10	1888.664																																																																																								
+ 	G8	0.356		178.763	 	 	 	 	 																																																																																								
+ 	G9	0.411		213.41	 	 	 	 	 																																																																																								
+P13	B11	0.185		79.882	78.783	2.382	3	10	787.829																																																																																								
+ 	C11	0.186		80.417	 	 	 	 	 																																																																																								
+ 	D11	0.178		76.05	 	 	 	 	 																																																																																								
+P14	B10	0.394		202.594	205.382	5.22	2.5	10	2053.815																																																																																								
+ 	C10	0.393		202.146	 	 	 	 	 																																																																																								
+ 	D10	0.408		211.404	 	 	 	 	 																																																																																								
+P15																																																																																																	
+Group Column	Formula Name	Formula	Precision	Notation																																																																																													
+1	Sample	!SampleNames	2 decimal places	Numeric																																																																																													
+2	Wells	!WellIDs	2 decimal places	Numeric																																																																																													
+3	Value	!WellValues	3 decimal places	Numeric																																																																																													
+4	R	"If (Value>=MinStd@Standards and Value<=MaxStd@Standards,"""",""R"")"	3 decimal places	Numeric																																																																																													
+5	Result	"InterpX(Std@StandardCurve,Value)"	3 decimal places	Numeric																																																																																													
+6	MeanResult	Average(Result)	3 decimal places	Numeric																																																																																													
+7	SD	Stdev(Result)	3 decimal places	Numeric																																																																																													
+8	CV	Cv(Result)	1 decimal places	Numeric																																																																																													
+9	Dilution	!Factor	1 decimal places	Numeric																																																																																													
+10	AdjResult	MeanResult*!Factor	3 decimal places	Numeric																																																																																													
+																																																																																																	
+Group Summaries																																																																																																	
+InRange	R - Outside standard range			0 decimal places	Numeric Notation 																																																																																												
+MeanResult	Mean Adjusted Result:	797.83	Average(AdjResult)	2 decimal places	Numeric Notation 																																																																																												
+~End 																																																																																																	
+Group: Control																																																																																																	
+Sample	Wells	Sample#	Values	MeanValue	Results	Mean	SD	CV																																																																																									
+1	E11	1	0.833	0.881	533.493	576.683	56.636	9.821																																																																																									
+ 	F11	 	0.951	 	640.806	 	 	 																																																																																									
+ 	G11	 	0.858	 	555.751	 	 	 																																																																																									
+																																																																																																	
+Group Column	Formula Name	Formula	Precision	Notation																																																																																													
+1	Sample	!SampleNames	2 decimal places	Numeric																																																																																													
+2	Wells	!WellIDs	2 decimal places	Numeric																																																																																													
+3	Sample#	Index	0 decimal places	Numeric																																																																																													
+4	Values	!WellValues	3 decimal places	Numeric																																																																																													
+5	MeanValue	Average(Values)	3 decimal places	Numeric																																																																																													
+6	Results	"InterpX(Std@StandardCurve,Values)"	3 decimal places	Numeric																																																																																													
+7	Mean	Average(Results)	3 decimal places	Numeric																																																																																													
+8	SD	Stdev(Results)	3 decimal places	Numeric																																																																																													
+9	CV	Cv(Results)	3 decimal places	Numeric																																																																																													
+																																																																																																	
+Group Summaries																																																																																																	
+~End 																																																																																																	
+Original Filename: assay 11 and 12 12202017; Date Last Saved: 12/21/2017 8:37:56 AM																																																																																																	
