@@ -162,6 +162,7 @@ setMethod("load.ODs", c("x"="elisa_plate"),
 				ind<-paste0(rowSym[annotation$unknowns$row],annotation$unknown$col);
 				x@data.unknown<-cbind(x@data.unknown, "OD"=plate.data[ind]);
 			}
+			x@data.std$conc <-as.numeric(x@data.std$conc)
 			#cat("====done");
 			return(x)
 		}#end of function

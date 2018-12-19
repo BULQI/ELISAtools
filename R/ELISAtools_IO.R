@@ -629,7 +629,7 @@ read.plate<-function(ODs, annotation, batchID, expID)
 	{
 		#cat("i:",i,"\n")
 		tempStr<-ODs[i];#trimws(ODs[i], which="both");
-		if(length(grep("^~End",tempStr))>0)
+		if(length(grep("^[ \t\r\n]*~End",tempStr))>0)
 		{#we are done.
 			#cat("\tbreak");
 			break;
@@ -671,10 +671,15 @@ read.plate<-function(ODs, annotation, batchID, expID)
 	OD.plate<-strsplit(OD.plate, "\t")[[1]]
 	temperature<-as.numeric(OD.plate[2])
 	OD.plate<-as.numeric(OD.plate[-c(1:2)]);
-	
-	OD.blank<-strsplit(OD.blank, "\t")[[1]]
-	#temperature<-as.numeric(OD.blank[2])
-	OD.blank<-as.numeric(OD.blank[-c(1:2)]);
+	if(is.null(OD.blank))
+	{
+		OD.blank<-OD.plate;
+		OD.blank[]<-0;
+	}	else {
+		OD.blank<-strsplit(OD.blank, "\t")[[1]]
+		#temperature<-as.numeric(OD.blank[2])
+		OD.blank<-as.numeric(OD.blank[-c(1:2)]);
+	}
 	
 	#now we are done parsing, put into data frame and get ready to do output
 	eplate<-elisa_plate();
@@ -792,7 +797,7 @@ read.plates<-function(fileName, annotations, num.plate=1, batchID, expID ,date=N
 			break;	
 		}
 		ind.start<-ind.start[1];
-		ind.end<-grep("^~End[ \t\r\n]*$",OD.raw);
+		ind.end<-grep("^[ \t]*~End[ \t\r\n]*$",OD.raw, ignore.case=T);
 		if(length(ind.end)<1)
 		{
 			warning("not enough plates found in OD data file (no ending point), please check");
