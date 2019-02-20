@@ -12,10 +12,14 @@ Depends: R (>= 3.4.3),
 License: MIT
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.1.0.9000
+RoxygenNote: 6.1.1.9000
 Collate: 
     'BatchCorrection.R'
     'ELISAplate.R'
     'ELISAtools_IO.R'
     'ELISAtools.R'
     'Regression.R'
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr

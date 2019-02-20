@@ -451,8 +451,9 @@ saveRegressionModel<-function(batches, regModel, mode=c("fix.both","fix.low", "f
 
 #align the standard by shifting toward reference and then plot
 #then together to QC the fitting.
+#graph.file: is the file name for the graph to be plotted.
 #'@export		
-plotAlignData<-function(batches)
+plotAlignData<-function(batches, graph.file=NULL)
 {
 	if(missing(batches))
 	{
@@ -461,6 +462,10 @@ plotAlignData<-function(batches)
 	if(class(batches)!="list")
 	{
 		stop("the input should be a list")
+	}
+	if(!is.null(graph.file)&&graph.file!="")
+	{
+		svg(file=graph.file)
 	}
 	#plot 
 	if(length(batches)<=0)
@@ -527,12 +532,18 @@ plotAlignData<-function(batches)
 			batchIDs, lty=c(2, rep(3,length(batchIDs)-1)),col=c(1:length(batchIDs)), 
 			pch=c(-1,(1:length(batchIDs))+1), lwd=c(2,rep(1,length(batchIDs)-1))
 			)
+	if(!is.null(graph.file)&&graph.file!="")
+	{
+		dev.off();
+	}
+	return(graph.file);
 }
 
 #do not align the standards. simply plot the data by batch. 
 #no shifting
+#graph.file is the file name for the graph to be plotted.
 #'@export
-plotBatchData<-function(batch)
+plotBatchData<-function(batch, graph.file=NULL)
 {
 	if(missing(batch))
 	{
@@ -552,6 +563,12 @@ plotBatchData<-function(batch)
 	x<-seq(x_min, x_max*1.1,by=(x_max-x_min)/1000);
 	ymin<-batch@range.ODs[1]
 	ymax<-batch@range.ODs[2]
+	
+	if(!is.null(graph.file)&&graph.file!="")
+	{
+		svg(file=graph.file)
+	}
+	
 	if((batch@model.name=="5pl"||batch@model.name=="4pl")&&length(pars)==5)
 	{
 		pars<-pars+c(0,0,-1*batch@normFactor,0,0)
@@ -586,6 +603,11 @@ plotBatchData<-function(batch)
 			runID, lty=c(2, rep(3,length(runID)-1)),col=c(1:length(runID)), 
 			pch=rep(-1,length(runID)), lwd=c(2,rep(1,length(runID)-1))
 			)
+	if(!is.null(graph.file)&&graph.file!="")
+	{
+		dev.off();
+	}
+	return(graph.file);
 }
 ###
 #write html report
@@ -632,12 +654,12 @@ reportHtml<-function(batches, file.name="report", file.dir=".", desc="")
 		stop("ERROR:please specify the input data as a list of elisa_batch objects")
 	}
 	
-	if(!file.exists("."))
+	if(!file.exists(file.dir))
 	{
 		stop("ERROR:the specified directory doesn't exist. please check")
 	}
 		
-	if(file.exists(file.path(file.dir, file.name)))
+	if(file.exists(file.path(file.dir, paste0(file.name,"html"))))
 	{
 		cat("The specified file exists and will be overwritten");
 	}
@@ -709,8 +731,11 @@ reportHtml<-function(batches, file.name="report", file.dir=".", desc="")
 	x<-HTMLhr();
 	x<-HTML.title("Model fitting QC", HR=3);
 	#if(
-	x<-plotAlignData(batches);
-	x<-HTMLplot() ;
+	fname.suffix<-as.numeric(format(Sys.time(), "%OS3"))*1000 
+	graphName<-paste0("aligned_",fname.suffix,".svg");
+	x<-plotAlignData(batches, graphName);
+	x<-HTMLInsertGraph(graphName,file=file.path(file.dir,paste0(file.name,".html")));
+	#x<-HTMLplot() ;
 	x<-HTMLhr();
 	x<-Sys.sleep(0.95);
 	x<-HTML.title("Data Output:", HR=3);
@@ -719,8 +744,12 @@ reportHtml<-function(batches, file.name="report", file.dir=".", desc="")
 		batch<-batches[[i]];
 		
 		x<-HTML.title(paste0("Batch:",batch@batchID,"; S Factor:", format(batch@normFactor,digit=3,nsmall=2)), HR=2);
-		x<-plotBatchData(batch);
-		x<-HTMLplot() ;
+		graphName<-paste0("batch_",i,"_",fname.suffix, ".svg");
+		x<-plotBatchData(batch, graphName);
+		#cat("graph name is:", graphName,"\n");
+		x<-HTMLInsertGraph(graphName,file=file.path(file.dir,paste0(file.name,".html")));
+		#cat("file name is :", file.path(file.dir,paste0(file.name,".html")),"\n");
+		#x<-HTMLplot() ;
 		#write data.
 		x<-Sys.sleep(0.9);
 		#x<-HTMLhr();
