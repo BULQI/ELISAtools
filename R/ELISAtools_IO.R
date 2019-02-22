@@ -60,7 +60,7 @@
 #'write.table(ann, file="annote.txt", sep="\t", row.names=T,
 #'		col.names=TRUE)
 # #' @seealso  \code{\link{SensorgramData-class}} \code{\link{plot}} \code{\link{SaveSPRData}}
-#' @export
+# #' @export
 annotate.plate<-function (sample.id, sample.prefix, sample.suffix,
 		num.sample,num.std=8,
 		byRow.sample=TRUE, 
@@ -283,7 +283,7 @@ annotate.plate<-function (sample.id, sample.prefix, sample.suffix,
 #'#call to do the reading.
 #' annotation<-read.annotation(ann,  std.conc)
 # #' @seealso  \code{\link{SensorgramData-class}} \code{\link{plot}} \code{\link{SaveSPRData}}
-#' @export
+# #' @export
 read.annotation<-function(annotation,  std.conc)
 {
 	#check the data integraty 
@@ -891,6 +891,7 @@ loadData<-function(design.file)
 	#into different batch
 	batch.IDs<-unique(dfile$Batch)
 	batches<-list();#vector(mode="list",length=length(batch.IDs))
+	dir_design<-normalizePath(dirname(design.file));
 	for(i in 1:length(batch.IDs))
 	{
 		cat("Reading Data for Batch:",i,"--",batch.IDs[i],"\n")
@@ -904,16 +905,26 @@ loadData<-function(design.file)
 		{
 			cat("\tExperiment:",j,"--", dfile[ind[j],]$ExpID,"\n")
 			flush.console();
-			dir_ann<-".";
+			
+			dir_ann<-dir_design;
+			
 			if(!is.na(dfile[ind[j],]$Dir_Annotation))
 			{
-				dir_ann<-dfile[ind[j],]$Dir_Annotation;
+				dir_ann<-normalizePath(dfile[ind[j],]$Dir_Annotation);
 			}
-			dir_sc<-"."
+			if(dirname(dfile[ind[j],]$AnnotationFile)!=".")
+			{
+				dir_ann<-normalize(dirname(dfile[ind[j],]$AnnotationFile));
+			}			
+			dir_sc<-dir_design
 			
 			if(!is.na(dfile[ind[j],]$Dir_StdConc))
 			{
-				dir_sc<-dfile[ind[j],]$Dir_StdConc;
+				dir_sc<-normalizePath(dfile[ind[j],]$Dir_StdConc);
+			}
+			if(dirname(dfile[ind[j],]$Std_Conc)!=".")
+			{
+				dir_sc<-normalize(dirname(dfile[ind[j],]$Std_Conc));
 			}
 			#need to read annotation
 			annotations<-read.annotations(annotation=dfile[ind[j],]$AnnotationFile, 
@@ -921,7 +932,8 @@ loadData<-function(design.file)
 					dir.annotation=dir_ann, 
 					dir.stdConc=dir_sc);
 			    
-			ebatch@runs[[j]]<-read.plates(fileName=dfile[ind[j],]$FileName, annotations=annotations, 
+			ebatch@runs[[j]]<-read.plates(fileName=file.path(dir_design,dfile[ind[j],]$FileName), 
+					annotations=annotations, 
 					batchID=dfile[ind[j], ]$Batch, expID=dfile[ind[j],]$ExpID,
 					num.plate=dfile[ind[j],]$Num_Plate,date=dfile[ind[j],]$Date
 					)
@@ -957,9 +969,33 @@ loadData<-function(design.file)
 #'		each plate.
 #'
 #'@examples
-#' setwd(system.file("extdata", package="ELISAtools"))
-#' loadDB("elisa.rds");
-# #' @seealso  \code{\link{elisa_batch-class}} \code{\link{loadData}} \code{\link{saveDB}}
+#'#R code to run 5-parameter logistic regression on ELISA data
+#'#load the library
+#'library(ELISAtools)
+#'
+#'#get file folder
+#'dir_file<-system.file("extdata", package="ELISAtools")
+#'
+#'batches<-loadData(file.path(dir_file,"design.txt"))
+#'
+#'#make a guess for the parameters, the other two parameters a and d 
+#'#will be estimated based on data.
+#'model<-"5pl"
+#'pars<-c(7.2,0.5, 0.015) #5pl inits
+#'names(pars)<-c("xmid", "scal", "g")
+#'
+#'
+#'#do fitting. model will be written into data set.
+#'batches<-runFit(pars=pars,  batches=batches, refBatch.ID=1, model=model  )
+#'
+#'#now call to do predications based on the model.
+#'batches<-predictAll(batches);
+#'
+#'#now saving the data.
+#'saveDB(batches, "elisa_tool1.rds");
+#'
+#' loadDB("elisa_tool1.rds");
+#' @seealso  \code{\link{elisa_batch-class}} \code{\link{loadData}} \code{\link{saveDB}}
 #'
 #'@export
 loadDB<-function(db)
@@ -1000,9 +1036,32 @@ loadDB<-function(db)
 #'
 #'
 #'@examples
-#' setwd(system.file("extdata", package="ELISAtools"))
-#' saveDB("elisa.rds");
-# #' @seealso  \code{\link{elisa_batch-class}} \code{\link{loadData}} \code{\link{saveDB}}
+#'#R code to run 5-parameter logistic regression on ELISA data
+#'#load the library
+#'library(ELISAtools)
+#'
+#'#get file folder
+#'dir_file<-system.file("extdata", package="ELISAtools")
+#'
+#'batches<-loadData(file.path(dir_file,"design.txt"))
+#'
+#'#make a guess for the parameters, the other two parameters a and d 
+#'#will be estimated based on data.
+#'model<-"5pl"
+#'pars<-c(7.2,0.5, 0.015) #5pl inits
+#'names(pars)<-c("xmid", "scal", "g")
+#'
+#'
+#'#do fitting. model will be written into data set.
+#'batches<-runFit(pars=pars,  batches=batches, refBatch.ID=1, model=model  )
+#'
+#'#now call to do predications based on the model.
+#'batches<-predictAll(batches);
+#'
+#'#now saving the data.
+#'saveDB(batches, "elisa_tool1.rds");
+#'
+#' @seealso  \code{\link{elisa_batch-class}} \code{\link{loadData}} \code{\link{saveDB}}
 #'
 #'@export
 saveDB<-function(batches, db)
@@ -1036,8 +1095,31 @@ saveDB<-function(batches, db)
 #'
 #'
 #'@examples
-#' setwd(system.file("extdata", package="ELISAtools"))
-#' saveDB("elisa.rds");
+#' #'#R code to run 5-parameter logistic regression on ELISA data
+#'#load the library
+#'library(ELISAtools)
+#'
+#'#get file folder
+#'dir_file<-system.file("extdata", package="ELISAtools")
+#'
+#'batches<-loadData(file.path(dir_file,"design.txt"))
+#'
+#'#make a guess for the parameters, the other two parameters a and d 
+#'#will be estimated based on data.
+#'model<-"5pl"
+#'pars<-c(7.2,0.5, 0.015) #5pl inits
+#'names(pars)<-c("xmid", "scal", "g")
+#'
+#'
+#'#do fitting. model will be written into data set.
+#'batches<-runFit(pars=pars,  batches=batches, refBatch.ID=1, model=model  )
+#'
+#'#now call to do predications based on the model.
+#'batches<-predictAll(batches);
+#'
+#'#now saving the data in text.
+#'saveDataText(batches, "elisa_data.txt");
+#'
 # #' @seealso  \code{\link{elisa_batch-class}} \code{\link{loadData}} \code{\link{saveDB}}
 #'
 #'@export

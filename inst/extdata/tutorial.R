@@ -7,12 +7,12 @@ library(ELISAtools)
 #get file folder
 dir_file<-system.file("extdata", package="ELISAtools")
 
-setwd(dir_file)
+#setwd(dir_file)
 batches<-loadData(file.path(dir_file,"design.txt"))
 
-#*****************
+#******IMPORTANT***********
 #now set the working directory to somewhere you have permission to write
-setwd("/home/feng/Feng/tmp")
+#setwd("/home/feng/Feng/tmp")
 #*************
 
 #now add

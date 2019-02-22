@@ -1,0 +1,256 @@
+---
+title: "ELISAtools Package Vignette"
+author: "Feng, Feng"
+date: "`r Sys.Date()`"
+header-includes:
+    - \usepackage{setspace}\doublespacing
+output: 
+  rmarkdown::pdf_document:
+    fig_caption: yes
+vignette: >
+  %\VignetteIndexEntry{ELISAtools Package Vignette}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+references:
+- id: feng2019
+  title: A Computational Solution To Improve Biomarker Reproducibility During Long-term Projects
+  author:
+  - family: Feng
+    given: Feng
+  - family: Thompson
+    given: Morgan
+  - family: Thomas
+    given: Beena
+  - family: Duffy
+    given: Elizabeth
+  container-title: BioRxiv
+  URL: 'https://www.biorxiv.org/content/10.1101/483800v2'
+  DOI: https://doi.org/10.1101/483800
+  publisher: Cold Spring Harbor Laboratory
+  issued:
+    year: 2018
+    month: 12
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+# 1. Overview
+
+Enzyme-linked immunoassays (ELISA) are probably the most frequently used assays in the biomedical field. In most ELISAs, a standard curve provides the mathematical relationship between known antigen concentrations and signal generation so that samples with unknown antigen levels can be quantified. For single use or short-term projects, lot-to-lot variability between ELISA kits is either not relevant or is manageable, but long-term projects over months or years present challenges for quality data management when multiple research ELISA kit lots are utilized. We develop this R package to do regular ELISA data analyses. We also develop a mathematical solution with a sufficiently generalized approach to adjust/normalize the batch affects caused by the lot-to-lot variability between ELISA kits. The program calculates a Shift factor ("S") that can be applied retrospectively to every ELISA plate’s standard curve and the biomarker concentrations for that plate are adjusted accordingly [@feng2019].
+
+
+# 2. Theory and Model
+
+  The four- and five-parameter logistic functions (4pl and 5pl) are good models for ELISA data. The 5pl has the form of     
+		$$ 
+			Y=a+\frac{d-a}{{(1+e^{\frac{xmid-x}{scal}})}^g}
+		$$
+  $Y$ is the signal intensity of assay; $x$ is the log- transformed concentration of analytes; $a$, $d$, $xmid$, $scal$ and $g$ are the five parameters. When $g$ takes a value of 1, the 5pl becomes the 4pl.
+
+  To analyze data of an individual ELISA assay, either the 4pl or the 5pl is fitted based on the standard data to estimate the parameters, and then measured ODs are reverse-looked up on the fitted equation to obtain the concentrations of analytes in unknown samples. 
+
+  In case of analyzing data from multiple assays, batch effects have to be modelled and corrected in order to compare these data. Many factors, either biological or technical, could possibly impact the reliability and reproducibility of immunoassays and lead to batch effects. Here we only model and adjust the one caused by the lot-to-lot variability between ELISA kits. The model first assumes the lot-to-lot variability mainly comes from the inaccurate quantitation of concentrations of standard analytes, which can expressed as
+	  	$$
+			c=c_0 \cdot N
+		$$
+  or in a logarithm format		
+		$$
+			log (c) = log (c_0) + log (N)
+		$$
+  $c_0$ and $c$ are the real and provided concentration of standard analytes by the manufacturer, respectively, and $N$ is the fold difference between them. Rewrite the above log-transformed equation by replacing $log(x)$, $log(x_0)$ and $log(N)$ with $x$, $x_0$ and S
+	  	$$
+			x_0=x-S
+		$$
+  Therefore the statistical model of the standard curves can be written as    
+	  	$$ 
+			Y_{ijk}=a+\frac{d-a}{{(1+e^{\frac{xmid_i-x_{ij}}{scal}})}^g}+\epsilon_{ijk}
+		$$
+		$$i=1,2....n; j=1,2....m;k=1,2....l$$
+  $m$, $n$ and $l$ are total number of batches, standards and measurements, respectively. From the equation, we can see that the parameters, $a$, $d$, $scal$, and $g$ are constant to all the batches. But the parameter $xmid$, the inflexion point of the function, is not and it can be expressed as 
+		$$
+			xmid_i=xmid+S_i
+		$$
+  Again, $S_i$, the Shifting factor, is the log fold difference between the known concentration and the true one. As a results, the model indicates that the standard curves of the same batch differ from each other as a result of random errors of measurements, while difference between curves from different batches is ascribed to inaccurate quantitation of analyte concentrations. 
+
+  To do the batch normalization/correction, the analyte concentrations in unknown samples are first estimated based on unadjusted standard curves and then the Shifting factor $S$ of the batch is applied to obtain the final quantities,
+		$$
+			{(x_{ij})}_{adj}={\hat{x}}_{ij}-S_i
+		$$
+  ${\hat{x}}_{ij}$ and $S_i$ are the unadjusted concentration of analytes in the unknown sample and the shifting factor of the batch, respectively. ${(x_{ij})}_{adj}$ is the batch normalized/corrected concentration. One things to mention is that practically it might not be possible to know the accurate concentrations of analytes in the standard samples. Therefore, we need to designate one batch as the reference, in which the analyte concentrations of standard samples are treated as accurate, and estimate the Shifting factor $S$ of all other batches relative to it. 
+	
+
+# 3. A Short Example
+
+## 1. Installation
+  Package can be installed from R CRAN
+  ```{r, eval=FALSE}
+  install.packages("ELISAtools")
+  ```
+  To get the source, please go to 
+    https://github.com/BULQI/ELISAtools [https://github.com/BULQI/ELISAtools]  
+
+## 2. Loading _ELISAtools_ and importing data
+  After installation, the package can be loaded by
+  ```{r, eval=T}  
+    library(ELISAtools)
+  ```
+  To read the data into software, we rely on 3 other sets of files, design file, annotation file, standard concentration file and OD data file.
+  
+  1. Standard concentration file, 
+  
+      this is a table containing the concentrations for the standards. It contains only two columns, ID and Std.
+
+	  
+	   ------   -------
+         ID       Std
+	     s1       3000
+	     s2       1500
+	     ..        ..
+	   ------   -------
+	    
+      It doesn't matter how the users name the columns. The software will only read the first two columns. The rest will be ignored. However, it does matter how the users name the standards. The software expects the standard samples to be names as $sxx$, a lower case letter "s" followed by digits. The digits could be single or many. The IDs in this sample will be cross referenced with the annotation file. So please keep the IDs/names of standards in consistence.  
+	
+  1. Annotation file: 
+  
+      this file is the map for the ELISA plate. It is a 96-well plate format (8x12 grids). It basically tells the software which OD data are for which samples when reading the plate. It contains the sample names in the plate wells. It accepts samples names with no fixed rules, but does expect standards with a strict format (see above).
+       
+
+	   
+	  ----  ---- ----  ----   -----  ----  ----  ----- ---- ----  ----	  
+	    1    2    3     4      5      6     7     8     9   10    11	
+        A    s1   s1    s1 								
+        B   s2    s2    s2    T-01   T-01   T01   T-02	 
+	    ..  ..    ..    ..    ..     ..     ..    ..    ..  ..    ..
+	  ----  ---- ----  ----   -----  ----  ----  ----- ---- ----  ----
+		
+  1. OD data file: 
+      
+	  this is the actually OD input. It is a exported text file from the original ".sdf" file. It contains the OD readings plus other analysis content done by the plate reader. Only the OD data will be read. The OD data are arranged in a format of 96 well plate. The ODs will be assigned the names by referencing the above annotation file. 
+
+	  #BLOCKS= 4
+      
+	  Plate:	Plate1	1.3	TimeFormat	Endpoint	Absorbance	Raw	FALSE	1						2	450 620 	1	12	96	1	8		
+	  
+	  Temperature(¡C)	A1	A2	A3	A4	A5	A6	A7	A8	
+	
+        24.6	2.2416	2.6971	2.4565	0.0647	0.0611	0.0591	0.0635	0.0592	0.0698	0.0629	
+
+	    24.6	0.0372	0.0363	0.039	0.0384	0.036	0.0352	0.0383	0.0371	0.0386	0.0369
+    
+      ~End
+	  
+  1. Design file: 
+      
+	  this is the file to be fed directly into the package. The software will read the data correctly by the information contained in this file. It is in a table format. Each row of the table is about one run of ELISA reading, and each reading could be made up of one or multiple ELISA plate. Multiple ELISA readings (runs) become one batch, depending on the standard lot number for example. Each run (row) might have the same or different annotation or standard files. Of course, each run (row) should have different OD files. 
+	  ```{r}
+	  dir_file<-system.file("extdata", package="ELISAtools")
+	  tbl.design<-read.table(file.path(dir_file,"design.txt"), header=T,sep="\t")
+	  print(tbl.design)	   
+      ```
+  
+  Two notes about the input files: 1) Standard, annotation and OD data files are arranged into different sections, each of which is for one elisa plate. The section/plate is denoted by lines starting with "Plate:…" and "~End". The content within these two lines are read and the rest will be discarded. Each run could have many plates. Please keep the files in consistent about number of plates; 2) it is not important how the files named as long as they are specified correctly.  
+
+  Please see the example data input files at package installed folder. The install folder could be obtained with the following R commands,
+  ```{r}
+  system.file("extdata", package="ELISAtools");
+  ```
+  
+  To read the input files, please generate the files specified above and then call the command of "loadData". 
+  ```{r chunk1, fig.show='asis', fig.cap="\\label{fig:chunk1}Raw batch data"}
+  dir_file<-system.file("extdata", package="ELISAtools")
+  
+  batches<-loadData(file.path(dir_file,"design.txt"))
+  
+  #batch data object
+  names(batches)
+  length(batches)
+  
+  #visualize the raw day without analyses
+  plotAlignData(batches);
+  ```  
+	
+  The above code will read in data for two batches of ELISA experiments, and each contains one or two runs, which include one or two elisa plates. We also plotted the raw data using the _plotAlignData()_ (see Figure \ref{fig:chunk1}).
+
+## 3. Model Fitting and unknown concentration estimation
+
+  After the data input, the model fitting can be called to run by _runFit()_ function. Either 5-parameter or 4-parameter logistic function can be chosen for fitting. Unknown sample concentration is estimated by calling _predictAll()_ function. This function estimate both the unknown centration based on the standards on the same plate and will also correct for the batch effects, if there more than one batches specified. The following code will run the analysis based on the sample input in the package folder.
+
+  ```{r chunk2 }
+  #make a guess for the initial value of the parameters, the other two parameters a and d 
+  #will be estimated based on data.
+  pars<-c(7.2,0.05, 0.015)
+  names(pars)<-c("xmid", "scal", "g")
+  
+  #do fitting. model will be written into data set.
+  batches<-runFit(pars=pars,  batches=batches, refBatch.ID=1  )
+  
+  #now call to do predications based on the model.
+  batches<-predictAll(batches);
+  ```
+  
+## 4. Visualizing and Report Fitting Results
+
+  To visualiz the fitting and $S$ factor corretion of batches effects, we can call two plotting functoins, _plotBatchData()_ and _plotAlignData()_. The former simply plot the batch data without doing batch effect correction and the latter do with batch effector correction. 
+  
+  The following code chunk plots Batch 1 ELISA data with 5-parameter fitting, but no S factor shifting/normalization (Figure \ref{fig:chunk3}).
+
+  ```{r chunk3, fig.show='asis', fig.cap="\\label{fig:chunk3}Batch 1 ELISA data with 5-parameter fitting (no S factor adjustment)"}
+  #plotting batch 1 data for visualizing
+  plotBatchData(batches[[1]])
+  ```
+  
+  The next chunk of code plots both Batches together after batches effect adjusted (Figure \ref{fig:chunk4}).
+
+  ```{r chunk4, fig.show='asis', fig.cap="\\label{fig:chunk4} ELISA batch data with 5-parameter fitting and S factor adjustment"}
+  #plotting batch data with adjustment for visualizing
+  plotAlignData(batches)
+  ```
+  
+  The batch data can also be saved to a text file with fitting results and S factors.
+  ```{r, eval=F}
+  #save the batch data with fitting results and S factors
+  fn<-file.path("batchAnalysis.txt");
+  saveDataText(batches, fn);
+  ```
+  
+  We also develop a function “reportHtml”, which will generate a comprehensive report of the fitting and batch adjusting results in a html format and it also include some brief QC for the fitting.
+  Run the following, (PLEASE DO remember to specify a directory, where you have the write permission, to write the report. The “ELISAtools” package “extdata” directory is most likely not writable for regular users.)  
+
+  ```{r,eval=F}
+  #reporting.
+  reportHtml(batches)
+  ```
+  
+  An html report will be generated and a text format file is also saved to the disk. In this case, the html report and the data file have the default names, "report.html" and "report.txt".
+  
+## 5. Save/load the batch data in R data set 
+  
+  The ELISA data can be saved in R data set and the previously saved data can be load/read to combine with the current data. The example R code are listed as below,
+
+  ```{r,eval=F}
+  #now saving the combine data.
+  saveDB(batches, "elisa_tool1.rds");
+  batches.old<-loadDB("elisa_tool1.rds");
+  ```
+  We can also combine the two ELISA batch data into one to analyze together and save for the future use.
+  ```{r, eval=F}
+  #now suppose want to join/combine the two batches, old and new 
+  batches.com<-combineData(batches.old, batches);
+  reportHtml(batches.com)
+  ```
+  One thing to mention is that we need to rerun the fitting after combining the two batches of data.
+
+# 4. Session Info
+  
+  The version number of R and packages loaded for generating the vignette were
+  ```{r}
+  sessionInfo()
+  ```
+  
+
+# 5. Reference and Citation
+

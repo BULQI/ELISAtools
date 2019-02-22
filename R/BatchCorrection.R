@@ -156,7 +156,7 @@ prepareRegInput<-function(batches
 	#'			of the inits vector\cr}
 	#'
 	#'}
-	#'@export
+	# #'@export
 	prepareInitsLM<-function(batches, ref.batch=1)
 	{
 		if(missing(batches))
@@ -452,6 +452,35 @@ saveRegressionModel<-function(batches, regModel, mode=c("fix.both","fix.low", "f
 #align the standard by shifting toward reference and then plot
 #then together to QC the fitting.
 #graph.file: is the file name for the graph to be plotted.
+#'@title plot all batch data together
+#'@description call to plot the batch data together for visualization. 
+#'@details If the data has been analysed, a fitted line will be drawn too. If
+#'	there are more than one batches, each batch will be plotted with different color
+#'	and different synmbols. Different batches will also be shifted/adjusted based on their
+#'	S factor, and one single fitted line (based on the "reference" batch) will be plotted.
+#'
+#'@param batches list of batches data objects either raw or analyzed data.
+#'@param graph.file text string as the output graph file name. If specified, a 
+#'	SVG (*.svg) graph will be saved to the disk. Otherwise, the graph 
+#'	will be send to the stdout.
+#'
+#'@return a text string which is the graph file name, if graph.file is specified. NULL
+#'	otherwise.
+#'
+#'@examples
+#' #load the library
+#' library(ELISAtools)
+#' 
+#' #get file folder
+#' dir_file<-system.file("extdata", package="ELISAtools")
+#'
+#' #load the data
+#' batches<-loadData(file.path(dir_file,"design.txt"))
+#'
+#' #plot the raw batch data together
+#' plotAlignData(batches);
+#'
+#'
 #'@export		
 plotAlignData<-function(batches, graph.file=NULL)
 {
@@ -491,11 +520,11 @@ plotAlignData<-function(batches, graph.file=NULL)
 		#pars<-pars+c(0,0,-1*batches[[1]]@normFactor,0,0)
 		y<-f5pl(pars, x)
 		plot(x,y, type="l",xlab="conc", ylab="OD", lwd=2, 
-			lty=2,col=1, main=paste0("ELISA Batch Data:",batches[[1]]@batchID));
+			lty=2,col=1, main=paste0("ELISA Batch Data:","Fitted and Adjusted"));
 		flag.analyzed<-T;
 	} else { #for non-analyzed data.
 		plot(c(x_min,x_max),c(ymin,ymax), type="n",xlab="conc", ylab="OD", lwd=2, 
-			lty=2,col=1, main=paste0("ELISA Batch Data:",batches[[1]]@batchID));
+			lty=2,col=1, main=paste0("ELISA Batch Data:","Raw"));
 		flag.analyzed<-F;
 	}
 	#y<-f5pl(pars, x)
@@ -542,6 +571,32 @@ plotAlignData<-function(batches, graph.file=NULL)
 #do not align the standards. simply plot the data by batch. 
 #no shifting
 #graph.file is the file name for the graph to be plotted.
+#'@title plot ELISA data for one batch
+#'@description call to plot the individual batch data for visualization. 
+#'@details If the data has been analysed, a fitted line will be drawn too. 
+#'
+#'@param batches list of batches data objects either raw or analyzed data.
+#'@param graph.file text string as the output graph file name. If specified, a 
+#'	SVG (*.svg) graph will be saved to the disk. Otherwise, the graph 
+#'	will be send to the stdout.
+#'
+#'@return a text string which is the graph file name, if graph.file is specified. NULL
+#'	otherwise.
+#'
+#'@examples
+#' #load the library
+#' library(ELISAtools)
+#' 
+#' #get file folder
+#' dir_file<-system.file("extdata", package="ELISAtools")
+#'
+#' #load the data
+#' batches<-loadData(file.path(dir_file,"design.txt"))
+#'
+#' #plot the raw batch 1 data
+#' plotBatchData(batches[[1]]);
+#'
+#'
 #'@export
 plotBatchData<-function(batch, graph.file=NULL)
 {
@@ -621,19 +676,24 @@ plotBatchData<-function(batch, graph.file=NULL)
 #'@param file.dir character string denoting the directory to save the report. 
 #'@param desc character string describing the project and experiment. Will be 
 #'		written into the report.
+#'@return the function returns NULL. But it will save the html report to the disk.
+#' Therefore, it is IMPORTANT to specify a directory you have write permission to
+#'	run this function. 
+#'
 #'@examples
 #'#R code to run 5-parameter logistic regression on ELISA data
-#'
 #'#load the library
 #'library(ELISAtools)
 #'
 #'##
 #'#get file folder
 #'dir_file<-system.file("extdata", package="ELISAtools")
-#'setwd(dir_file)
+#'
 #'batches<-loadData(file.path(dir_file,"design.txt"))
 #'
 #'#now add
+#'#----IMPORTANT-----
+#'#please make sure you have the write permission to save the html report
 #'reportHtml(batches);
 #'
 #'@seealso  \code{\link{elisa_batch}} \code{\link{elisa_run}}
@@ -779,5 +839,8 @@ reportHtml<-function(batches, file.name="report", file.dir=".", desc="")
 	HTMLStop();
 	fn<-file.path(file.dir, paste0(file.name,".txt"));
 	saveDataText(batches, fn);
+	cat("\nAn html reprot,\"",paste0(file.name,".html\", has been generate.\n"));
+	cat("\nA text file,\"", paste0(file.name, ".txt\", has been gerated.\n")); 
 	cat("\n");
+	#return(NULL);
 }

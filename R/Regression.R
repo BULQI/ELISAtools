@@ -37,7 +37,27 @@
 #'@param model string to indicate either 5-parameter logistic
 #'	function (5pl, default one) or 4-parameter logistic (4pl) to 
 #'	be used in the fitting.
-#'@return the batch data with the fitted model  
+#'@return the batch data with the fitted model 
+#'@examples
+#'#R code to run 5-parameter logistic regression on ELISA data
+#'#load the library
+#'library(ELISAtools)
+#'
+#'#get file folder
+#'dir_file<-system.file("extdata", package="ELISAtools")
+#'
+#'batches<-loadData(file.path(dir_file,"design.txt"))
+#'
+#'#make a guess for the parameters, the other two parameters a and d 
+#'#will be estimated based on data.
+#'model<-"5pl"
+#'pars<-c(7.2,0.5, 0.015) #5pl inits
+#'names(pars)<-c("xmid", "scal", "g")
+#'
+#'
+#'#do fitting. model will be written into data set.
+#'batches<-runFit(pars=pars,  batches=batches, refBatch.ID=1, model=model  )
+#' 
 #'@export
 #note 1) the outside caller need to prepare for data aggregation, in here
 #we do data aggregation.
