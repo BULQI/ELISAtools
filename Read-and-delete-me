@@ -39,11 +39,13 @@ usethis::use_vignette("ELISAtools-vignette")
 #to build the vignette 
 setwd( "E:\\feng\\LAB\\hg\\ELISA\\ELISAtools")
  devtools::build_vignettes();
- #two notes: 1)the building will build and copy it to /doc folder
- #		if we need to rebuild/modify, we need to copy back.
- #	2)the building now has errors, saying can not find "pandoc"
- #		we might need to restart the computer???
  
+
+ #building vignette from github installation
+devtools::install_github("BULQI/ELISAtools", build_opts = c("--no-resave-data", "--no-manual"))
+#no building vignette
+devtools::install_github("BULQI/ELISAtools", build_opts = c("--no-resave-data", "--no-manual", "--no-build-vignettes"))
+
 
 #call roxygen2 to process the helper pages from the roxygen comments
 setwd( "E:\\feng\\LAB\\hg\\ELISA\\ELISAtools")
