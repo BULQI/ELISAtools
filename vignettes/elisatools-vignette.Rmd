@@ -5,12 +5,12 @@ date: "`r Sys.Date()`"
 header-includes:
     - \usepackage{setspace}\doublespacing
 output: 
-  rmarkdown::pdf_document:
-    fig_caption: yes
+    pdf_document:
+        fig_caption: yes
 vignette: >
   %\VignetteIndexEntry{ELISAtools Package Vignette}
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+  \usepackage[utf8]{inputenc}
 references:
 - id: feng2019
   title: A Computational Solution To Improve Biomarker Reproducibility During Long-term Projects
@@ -34,8 +34,10 @@ references:
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
+  collapse = FALSE,
+  comment = "#>",
+  tidy=FALSE,
+  engine='R'
 )
 ```
 # 1. Overview
@@ -87,17 +89,19 @@ Enzyme-linked immunoassays (ELISA) are probably the most frequently used assays 
 
 ## 1. Installation
   Package can be installed from R CRAN
-  ```{r, eval=FALSE}
-  install.packages("ELISAtools")
-  ```
+```{r, eval=FALSE}
+install.packages("ELISAtools")
+```
+
   To get the source, please go to 
     https://github.com/BULQI/ELISAtools [https://github.com/BULQI/ELISAtools]  
 
 ## 2. Loading _ELISAtools_ and importing data
   After installation, the package can be loaded by
-  ```{r, eval=T}  
+```{r, eval=T}  
     library(ELISAtools)
-  ```
+```
+  
   To read the data into software, we rely on 3 other sets of files, design file, annotation file, standard concentration file and OD data file.
   
   1. Standard concentration file, 
@@ -146,32 +150,33 @@ Enzyme-linked immunoassays (ELISA) are probably the most frequently used assays 
   1. Design file: 
       
 	  this is the file to be fed directly into the package. The software will read the data correctly by the information contained in this file. It is in a table format. Each row of the table is about one run of ELISA reading, and each reading could be made up of one or multiple ELISA plate. Multiple ELISA readings (runs) become one batch, depending on the standard lot number for example. Each run (row) might have the same or different annotation or standard files. Of course, each run (row) should have different OD files. 
-	  ```{r}
-	  dir_file<-system.file("extdata", package="ELISAtools")
-	  tbl.design<-read.table(file.path(dir_file,"design.txt"), header=T,sep="\t")
-	  print(tbl.design)	   
-      ```
+	  
+```{r}
+dir_file<-system.file("extdata", package="ELISAtools")
+tbl.design<-read.table(file.path(dir_file,"design.txt"), header=T,sep="\t")
+print(tbl.design)	   
+```
   
   Two notes about the input files: 1) Standard, annotation and OD data files are arranged into different sections, each of which is for one elisa plate. The section/plate is denoted by lines starting with "Plate:…" and "~End". The content within these two lines are read and the rest will be discarded. Each run could have many plates. Please keep the files in consistent about number of plates; 2) it is not important how the files named as long as they are specified correctly.  
 
   Please see the example data input files at package installed folder. The install folder could be obtained with the following R commands,
-  ```{r}
-  system.file("extdata", package="ELISAtools");
-  ```
+```{r}
+system.file("extdata", package="ELISAtools");
+```
   
   To read the input files, please generate the files specified above and then call the command of "loadData". 
-  ```{r chunk1, fig.show='asis', fig.cap="\\label{fig:chunk1}Raw batch data"}
-  dir_file<-system.file("extdata", package="ELISAtools")
+```{r chunk1, fig.show='asis', fig.cap="\\label{fig:chunk1}Raw batch data"}
+dir_file<-system.file("extdata", package="ELISAtools")
   
-  batches<-loadData(file.path(dir_file,"design.txt"))
+batches<-loadData(file.path(dir_file,"design.txt"))
   
-  #batch data object
-  names(batches)
-  length(batches)
+#batch data object
+names(batches)
+length(batches)
   
-  #visualize the raw day without analyses
-  plotAlignData(batches);
-  ```  
+#visualize the raw day without analyses
+plotAlignData(batches);
+```  
 	
   The above code will read in data for two batches of ELISA experiments, and each contains one or two runs, which include one or two elisa plates. We also plotted the raw data using the _plotAlignData()_ (see Figure \ref{fig:chunk1}).
 
@@ -179,18 +184,18 @@ Enzyme-linked immunoassays (ELISA) are probably the most frequently used assays 
 
   After the data input, the model fitting can be called to run by _runFit()_ function. Either 5-parameter or 4-parameter logistic function can be chosen for fitting. Unknown sample concentration is estimated by calling _predictAll()_ function. This function estimate both the unknown centration based on the standards on the same plate and will also correct for the batch effects, if there more than one batches specified. The following code will run the analysis based on the sample input in the package folder.
 
-  ```{r chunk2 }
-  #make a guess for the initial value of the parameters, the other two parameters a and d 
-  #will be estimated based on data.
-  pars<-c(7.2,0.05, 0.015)
-  names(pars)<-c("xmid", "scal", "g")
+```{r chunk2 }
+#make a guess for the initial value of the parameters, the other two parameters a and d 
+#will be estimated based on data.
+pars<-c(7.2,0.05, 0.015)
+names(pars)<-c("xmid", "scal", "g")
   
-  #do fitting. model will be written into data set.
-  batches<-runFit(pars=pars,  batches=batches, refBatch.ID=1  )
+#do fitting. model will be written into data set.
+batches<-runFit(pars=pars,  batches=batches, refBatch.ID=1  )
   
-  #now call to do predications based on the model.
-  batches<-predictAll(batches);
-  ```
+#now call to do predications based on the model.
+batches<-predictAll(batches);
+```
   
 ## 4. Visualizing and Report Fitting Results
 
@@ -198,32 +203,32 @@ Enzyme-linked immunoassays (ELISA) are probably the most frequently used assays 
   
   The following code chunk plots Batch 1 ELISA data with 5-parameter fitting, but no S factor shifting/normalization (Figure \ref{fig:chunk3}).
 
-  ```{r chunk3, fig.show='asis', fig.cap="\\label{fig:chunk3}Batch 1 ELISA data with 5-parameter fitting (no S factor adjustment)"}
-  #plotting batch 1 data for visualizing
-  plotBatchData(batches[[1]])
-  ```
+```{r chunk3, fig.show='asis', fig.cap="\\label{fig:chunk3}Batch 1 ELISA data with 5-parameter fitting (no S factor adjustment)"}
+#plotting batch 1 data for visualizing
+plotBatchData(batches[[1]])
+```
   
   The next chunk of code plots both Batches together after batches effect adjusted (Figure \ref{fig:chunk4}).
 
-  ```{r chunk4, fig.show='asis', fig.cap="\\label{fig:chunk4} ELISA batch data with 5-parameter fitting and S factor adjustment"}
-  #plotting batch data with adjustment for visualizing
-  plotAlignData(batches)
-  ```
+```{r chunk4, fig.show='asis', fig.cap="\\label{fig:chunk4} ELISA batch data with 5-parameter fitting and S factor adjustment"}
+#plotting batch data with adjustment for visualizing
+plotAlignData(batches)
+```
   
   The batch data can also be saved to a text file with fitting results and S factors.
-  ```{r, eval=F}
-  #save the batch data with fitting results and S factors
-  fn<-file.path("batchAnalysis.txt");
-  saveDataText(batches, fn);
-  ```
+```{r, eval=F}
+#save the batch data with fitting results and S factors
+fn<-file.path("batchAnalysis.txt");
+saveDataText(batches, fn);
+```
   
   We also develop a function “reportHtml”, which will generate a comprehensive report of the fitting and batch adjusting results in a html format and it also include some brief QC for the fitting.
   Run the following, (PLEASE DO remember to specify a directory, where you have the write permission, to write the report. The “ELISAtools” package “extdata” directory is most likely not writable for regular users.)  
 
-  ```{r,eval=F}
-  #reporting.
-  reportHtml(batches)
-  ```
+```{r,eval=F}
+#reporting.
+reportHtml(batches)
+```
   
   An html report will be generated and a text format file is also saved to the disk. In this case, the html report and the data file have the default names, "report.html" and "report.txt".
   
@@ -231,25 +236,25 @@ Enzyme-linked immunoassays (ELISA) are probably the most frequently used assays 
   
   The ELISA data can be saved in R data set and the previously saved data can be load/read to combine with the current data. The example R code are listed as below,
 
-  ```{r,eval=F}
+```{r,eval=F}
   #now saving the combine data.
   saveDB(batches, "elisa_tool1.rds");
   batches.old<-loadDB("elisa_tool1.rds");
-  ```
+```
   We can also combine the two ELISA batch data into one to analyze together and save for the future use.
-  ```{r, eval=F}
+```{r, eval=F}
   #now suppose want to join/combine the two batches, old and new 
   batches.com<-combineData(batches.old, batches);
   reportHtml(batches.com)
-  ```
+```
   One thing to mention is that we need to rerun the fitting after combining the two batches of data.
 
 # 4. Session Info
   
   The version number of R and packages loaded for generating the vignette were
-  ```{r}
+```{r}
   sessionInfo()
-  ```
+```
   
 
 # 5. Reference and Citation
