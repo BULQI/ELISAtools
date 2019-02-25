@@ -3,6 +3,7 @@
 ###############
 ####import the stringi to take care of locale, mainly in mac 
 #'@import stringi
+#'@import utils
 
 #'@include ELISAplate.R
 
@@ -48,17 +49,17 @@
 #'replicates.sample<-2
 #'replicates.std<-2
 #'num.std<-6
-#'byRow.sample=F;
+#'byRow.sample=FALSE;
 #'rows<-c(3:8)
 #'cols<-c(3:12)
-#'ann<-annotate.plate(sample.id=sample.id, sample.prefix=sample.prefix, sample.suffix=sample.suffix,
-#'		num.sample=num.sample, byRow.sample=F, byRow.replicates=T, num.std=num.std,
-#'		rows<-rows, cols<-cols,
-#'		replicates.sample=replicates.sample, replicates.std=replicates.std
-#'		)
-#'
-#'write.table(ann, file="annote.txt", sep="\t", row.names=T,
-#'		col.names=TRUE)
+# #'ann<-annotate.plate(sample.id=sample.id, sample.prefix=sample.prefix, sample.suffix=sample.suffix,
+# #'		num.sample=num.sample, byRow.sample=F, byRow.replicates=T, num.std=num.std,
+# #'		rows<-rows, cols<-cols,
+# #'		replicates.sample=replicates.sample, replicates.std=replicates.std
+# #'		)
+# #'
+# #'write.table(ann, file="annote.txt", sep="\t", row.names=T,
+# #'		col.names=TRUE)
 # #' @seealso  \code{\link{SensorgramData-class}} \code{\link{plot}} \code{\link{SaveSPRData}}
 # #' @export
 annotate.plate<-function (sample.id, sample.prefix, sample.suffix,
@@ -204,7 +205,7 @@ annotate.plate<-function (sample.id, sample.prefix, sample.suffix,
 						rep(replicates.sample, num.sample/length(rows)));
 				if(!std.first)
 				{
-					rep.num<-c(rep(replicates.sample, num.saple/length(rows)),
+					rep.num<-c(rep(replicates.sample, num.sample/length(rows)),
 						rep(replicates.std,num.std/length(rows)));
 				}
 			}
@@ -278,10 +279,10 @@ annotate.plate<-function (sample.id, sample.prefix, sample.suffix,
 #' std.conc<-data.frame(id=c("s1","s2","s3","s4","s5","s6"), conc=c(1:6))
 
 #'#read the data as a data frame.
-#' ann<-read.table(fileName, header=T,  sep="\t", stringsAsFactors=F)
+#' ann<-read.table(fileName, header=TRUE,  sep="\t", stringsAsFactors=FALSE)
 #'
 #'#call to do the reading.
-#' annotation<-read.annotation(ann,  std.conc)
+# #' annotation<-read.annotation(ann,  std.conc)
 # #' @seealso  \code{\link{SensorgramData-class}} \code{\link{plot}} \code{\link{SaveSPRData}}
 # #' @export
 read.annotation<-function(annotation,  std.conc)
@@ -581,12 +582,12 @@ read.annotations<-function(annotation,  std.conc, dir.annotation, dir.stdConc,nu
 #' @return a object of elisa_plate holding data and annotations for 
 #'		a single plate.
 #'
-##'@examples
-##' #setwd( "E:\\feng\\LAB\\hg\\ELISA\\ELISAtools\\dev")
-##' std.conc<-data.frame(id=c("s1","s2","s3","s4","s5","s6"), conc=c(1:6))
-##' annotation<-"annote.txt"
+# #'@examples
+# #' #setwd( "E:\\feng\\LAB\\hg\\ELISA\\ELISAtools\\dev")
+# #' std.conc<-data.frame(id=c("s1","s2","s3","s4","s5","s6"), conc=c(1:6))
+# #' annotation<-"annote.txt"
 ##'
-##'	read.annotation(annotation,  std.conc)
+# #'	read.annotation(annotation,  std.conc)
 # #' @seealso  \code{\link{SensorgramData-class}} \code{\link{plot}} \code{\link{SaveSPRData}}
 # #' @export
 read.plate<-function(ODs, annotation, batchID, expID)
@@ -705,7 +706,7 @@ read.plate<-function(ODs, annotation, batchID, expID)
 #'	split the file into different ones.
 #'	
 #'	@param fileName character contains file name of OD data
-#'	@param annotation list of data containing annotation of the plates
+#'	@param annotations list of data containing annotation of the plates
 #'	@param batchID character the batchID read from the design file
 #'	@param expID character the expID or plateID read from the design file
 #'	@param num.plate numeric number of OD plates in the OD file. 
@@ -722,7 +723,7 @@ read.plate<-function(ODs, annotation, batchID, expID)
 #'	annotations<-read.annotations(annotation=ann,  std.conc=std.conc, num.plate=2)
 #'
 #'#now start reading the OD plate file
-#' fileName <-system.file("extdata", "Prothrombin F1.2 assay 3 and 4.txt", package="ELISAtools")
+#' fileName <-system.file("extdata", "Assay_3_and_4.txt", package="ELISAtools")
 #'	plates<-read.plates(fileName, annotations=annotations, num.plate=2, batchID="b1", expID="e1")
 # #' @seealso  \code{\link{SensorgramData-class}} \code{\link{plot}} \code{\link{SaveSPRData}}
 #'
@@ -860,8 +861,8 @@ read.plates<-function(fileName, annotations, num.plate=1, batchID, expID ,date=N
 #'		each plate.
 #'
 #'@examples
-#' setwd(system.file("extdata", package="ELISAtools"))
-#' loadData("design.txt");
+#' file.dir<-system.file("extdata", package="ELISAtools")
+#' loadData(file.path(file.dir,"design.txt"));
 # #' @seealso  \code{\link{SensorgramData-class}} \code{\link{plot}} \code{\link{SaveSPRData}}
 #'
 #'@export
@@ -914,7 +915,7 @@ loadData<-function(design.file)
 			}
 			if(dirname(dfile[ind[j],]$AnnotationFile)!=".")
 			{
-				dir_ann<-normalize(dirname(dfile[ind[j],]$AnnotationFile));
+				dir_ann<-normalizePath(dirname(dfile[ind[j],]$AnnotationFile));
 			}			
 			dir_sc<-dir_design
 			
@@ -924,7 +925,7 @@ loadData<-function(design.file)
 			}
 			if(dirname(dfile[ind[j],]$Std_Conc)!=".")
 			{
-				dir_sc<-normalize(dirname(dfile[ind[j],]$Std_Conc));
+				dir_sc<-normalizePath(dirname(dfile[ind[j],]$Std_Conc));
 			}
 			#need to read annotation
 			annotations<-read.annotations(annotation=dfile[ind[j],]$AnnotationFile, 
@@ -1090,7 +1091,7 @@ saveDB<-function(batches, db)
 #'     
 #'@details The results are written to disk in the text format and is 
 #'	easy to be used for other analysis. 
-#'@param  file character the file name specifying name of the db.
+#'@param  file.name character the file name specifying name of the db.
 #'@param  batches list of elisa batch data to be serialized.
 #'
 #'

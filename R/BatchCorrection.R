@@ -1,5 +1,8 @@
 
 #'@import R2HTML
+#'@import grDevices
+#'@import graphics
+
 
 #BatchCorretion module for ELISA analysis
 #it is in this model to prepare the input and parameters
@@ -20,8 +23,8 @@
 #'	data, and each batch contains multiple elisa_run 
 #'	objects \code{\link{elisa_plate}}
 #'	
-#'@param ref.ID character the reference batch ID. all other 
-#'	batches are shifted/corrected towards this reference batch
+# #'@param ref.ID character the reference batch ID. all other 
+# #'	batches are shifted/corrected towards this reference batch
 #' 
 #'@return list of parameters that will feed in to do regression.
 #'@seealso \code{\link{elisa_plate}}
@@ -66,7 +69,7 @@ prepareRegInput<-function(batches
 	return(list(y=y,x=x,ind.batch=ind.batch, ind.run=ind.run, ind.plate=ind.plate, num.stds=num.std))
 }
 
-#'@title prepare initial values for fitting shifts 
+    #'@title prepare initial values for fitting shifts 
 	#'@description generate the initial values for fitting shifts with 
 	#'	a model of the 5-parameter logistic function.
 	#'@details this is a more complicated way to prepare the initials for shifting. 
@@ -123,7 +126,8 @@ prepareRegInput<-function(batches
 	#'		}
 	#'}
 	#'to estimate the shift k, we take 
-	#'\eqn{k=log(Xj_i/Xj_i_pre)}\cr
+	#\eqn{k=log(Xj_i/Xj_i_pre)}\cr
+	#'   k=log(Xj_i/Xj_i_pre)    \cr
 	#'Another note is that we specify as an input which batch to use as the "reference".
 	#'Then within the batch, we pick as indicated above the reference standard line
 	#'. The return value records the batch, the run and the plate as output. Also
@@ -137,7 +141,7 @@ prepareRegInput<-function(batches
 	#and make the initial values in order to do nlsLM fitting
 	#it returns an array which has length identifical to the total series (row lengths)
 	#
-	#'@param batch list of elisa_batch data 
+	#'@param batches list of elisa_batch data 
 	#'		
 	#'@param ref.batch numeric the index of the reference batch. It is 1
 	#'		by default.
@@ -209,32 +213,19 @@ findMiddle.plate<-function(eplate, OD.middle)
 	m<-findUpLow.middle(eplate@data.std$OD, eplate@data.std$conc,OD.middle)
 	middle<- reverseLookupX.LM(m$low,m$high,OD.middle)
 }
-##'@export
-#get X Y data from elisa plate data
-##'@title to obtain X (conc) and Y (OD) from the elisa_plate data
-##'@description obtain standard X and Y data to put them into 
-##'	vector, so that to make them  
-#getXY.std<-function(plate)
-#{
-#		return list(x=plate@data.std$OD, y=plate@data.std$conc)
-#}
 
-#getXYs.std<-function(eplates)
-#{
-	
-#	for(
-#}
-#go through the runs in the batch to get 
-#the range of ODs to make a guess of a and d
-#of the 5pl 
+
+#'@title to get the OD ranges
+#'@description going through the list of  batches to get the OD range (min and max) 
+#'@param batches list of batches data
 #'@export
 rangeOD<-function(batches)
 {
-	if(missing(batch))
+	if(missing(batches))
 	{
 		stop("please specify the input ")
 	}
-	if(class(ebatch)!="list")
+	if(class(batches)!="list")
 	{
 		stop("please specify the correct input")
 	}
@@ -254,6 +245,7 @@ rangeOD<-function(batches)
 	}
 	return (c(min.OD, max.OD))
 }#
+
 #summary and get one representative curve line 
 #for each batch. But how??
 #1)pool the x/concs and then get unique concs
@@ -264,7 +256,7 @@ rangeOD<-function(batches)
 #line in each batch. 
 #so we don't have to do it very accurately.
 #in each batch
-#'@export
+# #'@export
 findMiddle.batch<-function(ebatch)
 {
 	rlen<-length(ebatch@runs)
@@ -361,17 +353,18 @@ findUpLow.middle<-function(y, x, OD.middle)
 	return(list(low=low, high=high))
 }
 
-##'save the fitted regression model into the data
-##'	here we save the model into batch data
-##'	we save the regression model into batch level
-##'	save k/shift at plate level.
-##'	we also summarize the batch correction factor in this function
-##'
-##'	input
-##'		regModel contains the shifts and fitted parameters. remember 
+# #'save the fitted regression model into the data
+# #'	here we save the model into batch data
+# #'	we save the regression model into batch level
+# #'	save k/shift at plate level.
+# #'	we also summarize the batch correction factor in this function
+# #'
+# #'	input
+# #'		regModel contains the shifts and fitted parameters. remember 
 #      the shifts do not include the reference line. so we need to 
 #		insert it.
-#'@export
+# #'
+# #'@export
 
 saveRegressionModel<-function(batches, regModel, mode=c("fix.both","fix.low", "fix.high","fix.all"),
 			ref.index=1, a, d, xmid, scal, g, model=c("5pl","4pl"))
@@ -494,7 +487,7 @@ plotAlignData<-function(batches, graph.file=NULL)
 	}
 	if(!is.null(graph.file)&&graph.file!="")
 	{
-		svg(file=graph.file)
+		svg(filename=graph.file)
 	}
 	#plot 
 	if(length(batches)<=0)
@@ -575,7 +568,7 @@ plotAlignData<-function(batches, graph.file=NULL)
 #'@description call to plot the individual batch data for visualization. 
 #'@details If the data has been analysed, a fitted line will be drawn too. 
 #'
-#'@param batches list of batches data objects either raw or analyzed data.
+#'@param batch list of batches data objects either raw or analyzed data.
 #'@param graph.file text string as the output graph file name. If specified, a 
 #'	SVG (*.svg) graph will be saved to the disk. Otherwise, the graph 
 #'	will be send to the stdout.
@@ -621,7 +614,7 @@ plotBatchData<-function(batch, graph.file=NULL)
 	
 	if(!is.null(graph.file)&&graph.file!="")
 	{
-		svg(file=graph.file)
+		svg(filename=graph.file)
 	}
 	
 	if((batch@model.name=="5pl"||batch@model.name=="4pl")&&length(pars)==5)
@@ -725,7 +718,7 @@ reportHtml<-function(batches, file.name="report", file.dir=".", desc="")
 	}
 	file.dir<-file.path(file.dir);
 		#now start 
-	HTMLStart(outdir=file.dir, file=file.name,
+	HTMLStart(outdir=file.dir, filename=file.name,
 		extension="html", echo=F, HTMLframe=FALSE#, append=TRUE
 		)
 	x<-HTML.title("ELISA Data Analysis Tool Report", HR=1);

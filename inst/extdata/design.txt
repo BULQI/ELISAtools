@@ -1,4 +1,4 @@
 ExpID	FileName	Batch	Num_Plate	Date	AnnotationFile	Std_Conc	Dir_Annotation	Dir_StdConc
-Exp1	Assay 2.txt	Batch1	1	9/18/2009	AnExp_2plate.txt	stdConc.txt		
-Exp1	Assay 3 and 4.txt	Batch1	2	9/18/2009	AnExp_2plate.txt	stdConc.txt		
-Exp1	Assay 11 and 12 12202017.txt	Batch2	2	9/18/2009	AnExp_2plate.txt	stdConc.txt		
+Exp1	Assay_2.txt	Batch1	1	9/18/2009	AnExp_2plate.txt	stdConc.txt		
+Exp1	Assay_3_and_4.txt	Batch1	2	9/18/2009	AnExp_2plate.txt	stdConc.txt		
+Exp1	Assay_11_and_12.txt	Batch2	2	9/18/2009	AnExp_2plate.txt	stdConc.txt		

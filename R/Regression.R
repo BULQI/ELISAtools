@@ -145,7 +145,7 @@ runFit<-function(pars, a, d, batches, refBatch.ID=1,model=c("5pl","4pl")  )
 	## ks for shifting/aligning x input.
 #pars=c(xmid, scal, g, k1, k2,...), notes: these input ks doesn't include the reference one, which always be zero.
 #aggregate
-#'@export
+# #'@export
 fnRes3pShift<-function( pars, #parameters 
 		y, #the response, assuming log transformed
 		x, #the independent variable, log-transformed
@@ -226,7 +226,7 @@ fnRes3pShift<-function( pars, #parameters
 	## ks for shifting/aligning x input.
 #pars=c(xmid, scal, g, k1, k2,...), notes: these input ks doesn't include the reference one, which always be zero.
 #aggregate
-#'@export
+# #'@export
 fnRes2pShift<-function( pars, #parameters 
 		y, #the response, assuming log transformed
 		x, #the independent variable, log-transformed
@@ -314,6 +314,14 @@ fnRes2pShift<-function( pars, #parameters
 	#the five parameter logistic function
 	#take in the parameter 5 parameters and get the function values
 	#NOTE: assuming x has been logged 
+	#'@title five-parameter logistic function
+	#'@description takes in the paramters and independent variable values and return the 
+	#'		5pl function value.
+	#'@details The function has the following form \cr
+	#'     f(x)=a+(d-a)/((1+exp((xmid-x)/scal))^g)
+	#'@param pars numeric the parameters of 5pl. It has the following order: [a, d, xmid, scal, g].
+	#'@param x numeric log-transformed x values.
+	#'@return 5pl function values. 
 	#'@export
 	f5pl<-function(pars,x)
 	{
@@ -340,6 +348,14 @@ fnRes2pShift<-function( pars, #parameters
 		#pred<-a+(d-a)/(1+exp((xmid-x)/scal))^g
 	}
 	
+	#'@title get rid of zeros in a numeric vector 
+	#'@description Get rid of zeros in a nueric vector before taking 
+	#' log of them. We basically replace the "zeros" with a negligible small 
+	#'	 value in order to avoid NaN at log-transformation.
+	#'@param x numeric values as input 
+	#'@param fac numeric factor to scale in order to get a "small" value to 
+    #'  to replace zero 
+    #'@return a vector of value with zeros replaced.	
 	#'@export
 	#Note: output 
 	avoidZero<-function(x, fac=10)
@@ -352,9 +368,15 @@ fnRes2pShift<-function( pars, #parameters
 		return(x+x_min)
 	}
 	
-
+    #'@title inverse function of the 5-parameter logist function 
+	#'@description the inverse function of the 5pl
+	#'@param pars the parameters of the function
+	#'@param y the value to be reverse calculated.
+	#'@return the value of the reverse function 
 	#'@export
+	# #'@seealso [f5pl()]
 	# Note: output is exponentiated, but in log scale.
+	
 	inv.f5pl<-function(pars,y)
 	{
 		if(length(pars)!=5){

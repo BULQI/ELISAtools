@@ -59,7 +59,12 @@ remove.packages("ELISAtools")
 #setwd("C:\\Feng\\LAB\\hg\\ELISA")
 setwd("/home/feng/Feng/hg/")
 #install from local directory, but this is different from install.packages
-devtools::install("ELISAtools",, build_vignettes=T)
+devtools::install("ELISAtools", build_vignettes=T)
+
+#to build an R package 
+setwd("/home/feng/Feng/hg/ELISAtools")
+devtools::build()
+
 
 #install from local using install.packages utility
 setwd( "E:\\feng\\LAB\\hg\\ELISA\\")
@@ -68,6 +73,8 @@ install.packages(c("ELISAtools"),repos=NULL, type="source")
 #load the package
 library(ELISAtools)
 
+#to prepare the license file
+usethis::use_mit_license(name="Feng Feng")
 
 ################
 #update the text data
