@@ -46,7 +46,7 @@ devtools::install_github("BULQI/ELISAtools", build_opts = c("--no-resave-data", 
 #no building vignette
 devtools::install_github("BULQI/ELISAtools", build_opts = c("--no-resave-data", "--no-manual", "--no-build-vignettes"))
 
-
+setwd("E:\\feng\\LAB\\hg\\ELISA\\ELISAtools\\dev\\CRAN\\ELISAtools");
 #call roxygen2 to process the helper pages from the roxygen comments
 setwd( "E:\\feng\\LAB\\hg\\ELISA\\ELISAtools")
 #setwd("C:\\Feng\\LAB\\hg\\ELISA\\ELISAtools")
@@ -59,7 +59,7 @@ remove.packages("ELISAtools")
 setwd( "E:\\feng\\LAB\\hg\\ELISA")
 #setwd("C:\\Feng\\LAB\\hg\\ELISA")
 #install from local directory, but this is different from install.packages
-devtools::install("ELISAtools", build_vignettes=F)
+devtools::install("ELISAtools", build_vignettes=T)
 
 #install from local using install.packages utility
 setwd( "E:\\feng\\LAB\\hg\\ELISA\\")
@@ -72,6 +72,7 @@ library(ELISAtools)
 ###to build a package for deployment
 setwd( "E:\\feng\\LAB\\hg\\ELISA\\ELISAtools")
 devtools::build()
+devtools::check();
 ###install from a tarball
 setwd( "E:\\feng\\LAB\\hg\\ELISA")###where the tarball is.
 install.packages("ELISAtools_0.0.0.9000.tar.gz", repo=NULL, type="source")
