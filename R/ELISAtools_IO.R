@@ -11,7 +11,7 @@
 #return a 96 well plate with ids. user need to input the sample Id
 #but std always be std1 std2 std3
 #'@title S3 method to annotate ELISA plate
-#'@description to write annotations for ELISA plate as
+#'@description to write annotations for an ELISA plate as
 #'    an input to guide the functions to read OD values
 #' @details Based on the input to quickly write the annotations
 #'  for ELISA plate. The output is in a 96-well format and 
@@ -40,18 +40,18 @@
 #'		the samples first.
 #' @return a dataframe holding the annotations for the plate.
 #'
-#'@examples
-#'
-#'sample.id<-c(1:24)
-#'sample.prefix<-"sam"
-#'sample.suffix<-"_d"
-#'num.sample<-length(sample.id)
-#'replicates.sample<-2
-#'replicates.std<-2
-#'num.std<-6
-#'byRow.sample=FALSE;
-#'rows<-c(3:8)
-#'cols<-c(3:12)
+# #'@examples
+# #'
+# #'sample.id<-c(1:24)
+# #'sample.prefix<-"sam"
+# #'sample.suffix<-"_d"
+# #'num.sample<-length(sample.id)
+# # 'replicates.sample<-2
+# # 'replicates.std<-2
+# #'num.std<-6
+# #'byRow.sample=FALSE;
+# #'rows<-c(3:8)
+# #'cols<-c(3:12)
 # #'ann<-annotate.plate(sample.id=sample.id, sample.prefix=sample.prefix, sample.suffix=sample.suffix,
 # #'		num.sample=num.sample, byRow.sample=F, byRow.replicates=T, num.std=num.std,
 # #'		rows<-rows, cols<-cols,
@@ -61,7 +61,7 @@
 # #'write.table(ann, file="annote.txt", sep="\t", row.names=T,
 # #'		col.names=TRUE)
 # #' @seealso  \code{\link{SensorgramData-class}} \code{\link{plot}} \code{\link{SaveSPRData}}
-# #' @export
+# # @export
 annotate.plate<-function (sample.id, sample.prefix, sample.suffix,
 		num.sample,num.std=8,
 		byRow.sample=TRUE, 
@@ -243,14 +243,14 @@ annotate.plate<-function (sample.id, sample.prefix, sample.suffix,
 
 #reading the annotation for the plate
 #this will give us the information about sample identities
-#'@title S3 method to read the annotation of single ELISA plate
-#'@description to parse annotation for one single ELISA plate from
-#'    a section of a file and output the annotation for standard and unknown
+#'@title Read the annotation of single ELISA plate
+#'@description Parse the annotations for one single ELISA plate from
+#'    a section of a file and output the annotations for standard and unknown
 #'		separately.
 #' @details The annotation file may contain annotations for more than
 #'		one plate. Each plate is marked by "Plate: plate 1..." and 
-#'		"~End". This function is passed in the content for each section
-#'		and we do actually parsing in here. Put the annotation into 
+#'		"~End". This function is fed in with the content for each section
+#'		and we do actually parsing in here. Store the annotations into 
 #'		data frame. It also parse the standard concentration and 
 #'		include this information in the data frame.
 #'		For each section,we expect
@@ -263,14 +263,14 @@ annotate.plate<-function (sample.id, sample.prefix, sample.suffix,
 #'	}
 #'		In addition, the row name and column names indicate the
 #'		the plate row and column indices.
-#'		As input, the stardard and unknown return separately in two 
+#'		As input, the stardard and unknown are returned separately in two 
 #'		tables.
-#'	@param annotation character to specify the name of the annotation file
+#'	@param annotation characters to specify the path and name of the annotation file
 #'	@param std.conc data.frame containing standard concentration data. 
 #'		Only first two columns are used with first one to be the standard IDs
 #'		and second the concentrations.
 # #'	@param file.dir file path to the annotatoin file.
-#' @return a list of dataframes holding the annotations for the plate.
+#' @return a list of data.frames holding the annotations for the plate.
 #'
 #'@examples
 #'#get example annotation file path from the system folder
@@ -283,7 +283,7 @@ annotate.plate<-function (sample.id, sample.prefix, sample.suffix,
 #'
 #'#call to do the reading.
 # #' annotation<-read.annotation(ann,  std.conc)
-# #' @seealso  \code{\link{SensorgramData-class}} \code{\link{plot}} \code{\link{SaveSPRData}}
+# #' @seealso  \code{\link{elisa_batch-class}} \code{\link{loadData}} 
 # #' @export
 read.annotation<-function(annotation,  std.conc)
 {
@@ -437,9 +437,9 @@ read.annotation<-function(annotation,  std.conc)
 #
 #reading the annotations for plates
 #this will give us the information about sample identities
-#'@title S3 method to read the annotations of plates 
-#'@description to parse annotations for multiple ELISA plates from
-#'   	file, one annotation file and one standard concentration file,
+#'@title Read the annotations of plates 
+#'@description Parse annotations for multiple ELISA plates from
+#'   	files, one annotation file and one standard concentration file,
 #'		and output the annotations for standard and unknown
 #'		separately.
 #' @details The annotation file may contain annotations for more than
@@ -455,11 +455,11 @@ read.annotation<-function(annotation,  std.conc)
 #'   D\tab	s2\tab	s2\tab		sample2\tab		sample\tab  ...\cr	
 #'	...\tab	...\tab	...\tab		...\tab		...\tab		...\cr
 #'	}
-#'	@param annotation character to specify the name of the annotation file
-#'	@param std.conc character to specify the standard concentration file. 
+#'	@param annotation characters to specify the path and name of the annotation file
+#'	@param std.conc characters to specify the standard concentration file. 
 #'		
-#'	@param dir.annotation file path to the annotatoin file.
-#'	@param dir.stdConc file path to the annotatoin file.
+#'	@param dir.annotation characters specifying the file to the annotatoin file.
+#'	@param dir.stdConc characters specifying the path to the annotatoin file.
 #'	@param num.plate numeric indicating the number of plates in the annotation
 #'			files.
 #' @return a list of annotations for elisa plates.
@@ -471,7 +471,7 @@ read.annotation<-function(annotation,  std.conc)
 #'
 #'#read them in and there are 2 plates.
 #'	read.annotations(annotation=ann,  std.conc=std.conc, num.plate=2)
-# #' @seealso  \code{\link{SensorgramData-class}} \code{\link{plot}} \code{\link{SaveSPRData}}
+# #' @seealso  \code{\link{elisa_run-class}} \code{\link{loadData}} 
 #' @export
 read.annotations<-function(annotation,  std.conc, dir.annotation, dir.stdConc,num.plate=1)
 {
@@ -568,18 +568,18 @@ read.annotations<-function(annotation,  std.conc, dir.annotation, dir.stdConc,nu
 #read each individual file of ODs 
 #reading the annotation for the plate
 #this will give us the information about sample identities
-#'@title S3 method to read the single ELISA OD plate
-#'@description to read the individual ELISA plate to parse the ODs.
+#'@title Read the single ELISA OD plate
+#'@description Read the individual ELISA plate to parse the ODs.
 #'     
 #'@details The input is a text file imported from the sdf file.  
 #'	We only read the first section with both the OD and blank file.
 #'	The OD data are read in according to the annotation file.
 #'	
-#'	@param ODs character contains data of ODs for one plate
-#'	@param annotation list of data containing annotation of the plate
-#'	@param batchID character the batchID read from the design file
-#'	@param expID character the expID or plateID read from the design file 
-#' @return a object of elisa_plate holding data and annotations for 
+#'	@param ODs characters containing data of ODs for one plate
+#'	@param annotation list of data containing annotations of the plate
+#'	@param batchID characters specifying the batchID read from the design file
+#'	@param expID characters specifying the expID or plateID read from the design file 
+#' @return an object of elisa_plate holding data and annotations for 
 #'		a single plate.
 #'
 # #'@examples
@@ -588,7 +588,7 @@ read.annotations<-function(annotation,  std.conc, dir.annotation, dir.stdConc,nu
 # #' annotation<-"annote.txt"
 ##'
 # #'	read.annotation(annotation,  std.conc)
-# #' @seealso  \code{\link{SensorgramData-class}} \code{\link{plot}} \code{\link{SaveSPRData}}
+# #' @seealso  \code{\link{elisa_batch-class}} \code{\link{loadData}} \code{\link{read.plates}}
 # #' @export
 read.plate<-function(ODs, annotation, batchID, expID)
 {
@@ -695,8 +695,8 @@ read.plate<-function(ODs, annotation, batchID, expID)
 	return(eplate)
 }
 
-#'@title S3 method to read the ELISA OD file
-#'@description to read the ELISA OD file to parse the ODs.
+#'@title Read the ELISA OD files
+#'@description Read the ELISA OD file to parse the ODs.
 #'     
 #'@details The input is a text file imported from the sdf file.  
 #'	The file may contain multiple plates of OD. We will parse 
@@ -705,13 +705,13 @@ read.plate<-function(ODs, annotation, batchID, expID)
 #'	are for the same batch and experiment. If otherwise, please 
 #'	split the file into different ones.
 #'	
-#'	@param fileName character contains file name of OD data
-#'	@param annotations list of data containing annotation of the plates
-#'	@param batchID character the batchID read from the design file
-#'	@param expID character the expID or plateID read from the design file
+#'	@param fileName characters containing file name of OD data
+#'	@param annotations list of data containing annotations of the plates
+#'	@param batchID characters specify the batchID read from the design file
+#'	@param expID characters specify the expID or plateID read from the design file
 #'	@param num.plate numeric number of OD plates in the OD file. 
-#'	@param date character the date running the ELISA exps.
-#' @return a object of elisa_run holding data and annotations for 
+#'	@param date characters the date running the ELISA exps.
+#' @return an object of elisa_run holding data and annotations for 
 #'		one or multiple plates.
 #'
 #'@examples
@@ -725,7 +725,7 @@ read.plate<-function(ODs, annotation, batchID, expID)
 #'#now start reading the OD plate file
 #' fileName <-system.file("extdata", "Assay_3_and_4.txt", package="ELISAtools")
 #'	plates<-read.plates(fileName, annotations=annotations, num.plate=2, batchID="b1", expID="e1")
-# #' @seealso  \code{\link{SensorgramData-class}} \code{\link{plot}} \code{\link{SaveSPRData}}
+# #' @seealso  \code{\link{elisa_batch-class}} \code{\link{loadData}} \code{\link{read.plates}}
 #'
 #'@export
 read.plates<-function(fileName, annotations, num.plate=1, batchID, expID ,date=NA_character_)
@@ -835,8 +835,8 @@ read.plates<-function(fileName, annotations, num.plate=1, batchID, expID ,date=N
 
 #####read in 
 ##for annotation, we assume there is header indicating the row index,and rownames for row index correctly!!.
-#'@title S3 method to read data according to the design file
-#'@description to read the design file and then load the 
+#'@title Read data according to the design file
+#'@description Read the design file and then load the 
 #'	data according to the information in the design file.
 #'     
 #'@details The design file contains all the information necessary
@@ -846,24 +846,30 @@ read.plates<-function(fileName, annotations, num.plate=1, batchID, expID ,date=N
 #'	Exp1\tab	file1.txt\tab	Batch1\tab	1\tab	9/18/2009\tab	annote.txt\tab	stdConc.txt\tab \tab \cr		
 #'	Exp2\tab	file2.txt\tab	Batch2\tab	2\tab	9/18/2009\tab	annote.txt\tab	stdConc.txt\tab \tab \cr		
 #'	}
-#'	The return data is a list of batches, which are made of multiple of elisa (list by class). The
-#'		run could contain one ro multiple elisa plate with data or annotation of each plate.
-#'			list|
-#'				|-batch1|
-#'				|       |-run1|
-#'				|		|	  |-plate1
-#'				|		|	  |-plate2
-#'				|-batch2
-#'				|
-#'	@param  design.file character the file name specifying the design of data
+#'	The return data is a list of batches (\code{\link{elisa_batch-class}}), 
+#'	which are made of one or many elisa runs(\code{\link{elisa_run-class}}) 
+#'	. The
+#'		run could contain one or many elisa plates (\code{\link{elisa_plate-class}})
+#'		with data or annotation of each plate.\cr
+#'  \tabular{lllllll}{
+#'	list\tab	|\tab	 \tab	 \tab	 \tab	 \tab	 \cr
+#'	 \tab	|\tab	--batch1\tab	|\tab	\tab	\tab	\cr		
+#'	 \tab	|\tab	 \tab	|\tab	--run1\tab	|\tab	\cr		
+#'	 \tab	|\tab	 \tab	|\tab	 \tab	|\tab	--plate1\cr
+#'	 \tab	|\tab	 \tab	|\tab	 \tab	|\tab	--plate2\cr
+#'	 \tab	|\tab	--batch2\tab	|\tab	\tab	\tab	\cr
+#'	 \tab	|\tab	 \tab	|\tab	\tab	\tab	\cr				
+#'}
+#'			
+#'	@param  design.file characters to specify the path and the file name of the design file.
 #' @return a list of batches holding different runs of elisa, which could contain
-#'		one or multiple elisa_plate with data and annotations for 
+#'		one or many elisa_plates with data and annotations for 
 #'		each plate.
 #'
 #'@examples
 #' file.dir<-system.file("extdata", package="ELISAtools")
 #' loadData(file.path(file.dir,"design.txt"));
-# #' @seealso  \code{\link{SensorgramData-class}} \code{\link{plot}} \code{\link{SaveSPRData}}
+#' @seealso  \code{\link{elisa_batch-class}} \code{\link{elisa_plate-class}} \code{\link{elisa_run-class}}
 #'
 #'@export
 loadData<-function(design.file)
@@ -957,16 +963,16 @@ loadData<-function(design.file)
 }
 
 #functions to 
-#'@title S3 method to read saved elisa_batch data
-#'@description to load serialized elisa_batch data from disk.
+#'@title Read the saved elisa_batch data
+#'@description Load the serialized elisa_batch data from disk.
 #'     
-#'@details here we deserialize elisa_batch data by wrapping the readRds()
+#'@details Here we deserialize elisa_batch data by wrapping the readRds()
 #'		function call.
-#'		The serialized elisa_batch data are assumed been correctly 
+#'		The serialized elisa_batch data are assumed to have been correctly 
 #'		analyzed. We will print a summary for what has been read. 
-#'@param  db character the file name specifying the elisa data.
+#'@param  db characters to specify the path and file name the elisa data file.
 #' @return a list of batches holding different runs of elisa, which could contain
-#'		one or multiple elisa_plate with data and annotations for 
+#'		one or many elisa_plates with data and annotations for 
 #'		each plate.
 #'
 #'@examples
@@ -1025,12 +1031,12 @@ loadDB<-function(db)
 #function to serialize the elisa_batch data 
 
 #functions to 
-#'@title S3 method to save elisa_batch data
-#'@description to serialize elisa_batch data to disk.
+#'@title Save the elisa_batch data
+#'@description Serialize elisa_batch data to disk.
 #'     
-#'@details here we serialize elisa_batch data by wrapping the saveRds()
+#'@details We serialize elisa_batch data by wrapping the saveRds()
 #'		function call.
-#'		The serialized elisa_batch data are assumed been correctly 
+#'		The serialized elisa_batch data are assumed to have been correctly 
 #'		analyzed. We will print a summary for what has been saved. 
 #'@param  db character the file name specifying name of the db.
 #'@param  batches list of elisa batch data to be serialized.
@@ -1086,12 +1092,12 @@ saveDB<-function(batches, db)
 }	
 
 #functions to 
-#'@title S3 method to save elisa_batch analysis results
-#'@description to save the data analysis results to disk in text format.
+#'@title Save elisa_batch analysis results
+#'@description Save the data analysis results to disk in text format.
 #'     
-#'@details The results are written to disk in the text format and is 
+#'@details The results are written to disk in the text format (tab-delimited) and is 
 #'	easy to be used for other analysis. 
-#'@param  file.name character the file name specifying name of the db.
+#'@param  file.name character specifying name of the output file.
 #'@param  batches list of elisa batch data to be serialized.
 #'
 #'

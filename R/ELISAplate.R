@@ -5,32 +5,32 @@
 #'@importFrom methods new
 
 #defining elisa plate object, S4 class
-#'@title S4 class definition of elisa_plate
+#'@title S4 class definition of an elisa_plate object
 #'
-#' @description \code{\link{elisa_plate}} define the S4 class of elisa_plate
+#' @description \code{\link{elisa_plate}} define the S4 class of an elisa_plate object
 #'
-#' @details defining the S4 class of the elisa_plate.
+#' @details defining the S4 class of the elisa_plate object.
 #'	This is the data structure to hold the elisa_plate Data. 
 #' 	It contains different slots for holding both standard and 
-#'    unknown data.It also defines 
+#'    unknown data. It also defines 
 #'    the regression model and the correction parameter 
 #'	  for the batch effects.\cr  
 #'	Note: we assume each plate has its own standard curve.
 #' @concept ELISA
 #'
-#' @param batchID character specify batches
+#' @param batchID characters to specify the batch
 #'         
-#' @param expID character specify experiment or plate ID
-#' @param desc character data/experiment information 
+#' @param expID characters to specify experiment or plate ID
+#' @param desc characters for the data/experiment information 
 #'          
-#' @param data.std data.frame data for standard curves 
+#' @param data.std data.frame for standard curve data 
 #'          
-#' @param data.unknown data.frame data for samples with unknown concentration
+#' @param data.unknown data.frame containing data for samples with unknown concentration
 # #' @param model.regression nls.lm \code{link{nls.lm}} the regression model
-# #'		fitted with either four- or five-parameter logistic function.  
-#' @param normFactor numeric the correction factor for batch effects.
-#' @param mdata.unknown data.frame data to contain the mean ODs and concentration by sample IDs.
-#' @param mdata.std data.frame data to contain the mean ODs and concentrations for standard data
+# #'		fitted with either the four- or five-parameter logistic function.  
+#' @param normFactor numeric the correction factor for batch effects ("S").
+#' @param mdata.unknown data.frame containing the mean ODs and concentration by sample IDs.
+#' @param mdata.std data.frame containing the mean ODs and concentrations for standard data
 #=================
 #' @slot batchID character
 #' @slot expID character
@@ -61,31 +61,31 @@ setClass("elisa_plate",
 	)
 )
 #constructor
-#'@title constructor function to build elisa_plate object
+#'@title Constructor function to build an elisa_plate object
 #' @description S3 method as a constructor to build the S4 
-#'	class object of elisa_plate \code{\link{elisa_plate}} 
+#'	class object of the elisa_plate \code{\link{elisa_plate}} 
 #'
 #' @details S3 method as a constructor to build the S4 
 #'	class object of elisa_plate \code{\link{elisa_plate}}. 
-#'	Normally this is called to build a empty object 
-#'	with default values and then load the data into it
+#'	Normally this is called to build an empty object 
+#'	with default values and then load data into it
 #'	by calling loadData \code{\link{loadData}} or load.ODs 
 #'	\code{\link{load.ODs}}
 #'
-#' @param batchID character specify batches
+#' @param batchID characters to specify the batch
 #'         
-#' @param expID character specify experiment or plate ID
-#' @param desc character data/experiment information 
+#' @param expID characters to specify experiment or plate ID
+#' @param desc characters for the data/experiment information 
 #'          
-#' @param data.std data.frame data for standard curves 
+#' @param data.std data.frame for standard curve data 
 #'          
-#' @param data.unknown data.frame data for samples with unknown concentration
+#' @param data.unknown data.frame for data of samples with unknown concentration
 # #' @param model.regression nls.lm \code{\link{nls.lm}} the regression model
 #'		fitted with either four- or five-parameter logistic function.  
 #' @param normFactor numeric the correction factor for batch effects.
-#' @param mdata.unknown data.frame data to contain the mean ODs and concentration by sample IDs.
-#' @param mdata.std data.frame data containing the mean ODs and concentration of the calibration data
-#' @param range.ODs numeica the min and max ODs in the plate.
+#' @param mdata.unknown data.frame containing the mean ODs and concentration by sample IDs.
+#' @param mdata.std data.frame containing the mean ODs and concentration of the calibration data
+#' @param range.ODs numeric the min and max ODs in the plate.
 #'	@return an elisa_plate object 
 #' @seealso \code{\link{nls.lm}} \code{\link{loadData}} \code{\link{elisa_plate}} 
 #'	\code{\link{load.ODs}}
@@ -104,27 +104,27 @@ elisa_plate<-function(batchID=NA_character_,expID=NA_character_,
 	mdata.unknown=mdata.unknown,
 	normFactor=normFactor,range.ODs=range.ODs))	
 }
-#'@title S4 generic function to load OD data
+#'@title Function to load OD data
 #'
-#'@description generic function to load OD data into elisa_plate 
+#'@description Generic function to load OD data into an elisa_plate 
 #'		object
-#'@details It load OD data into elisa_plate object. The data
-#'	usually read int from a design file, annotation file and 
+#'@details It loads OD data into an elisa_plate object. The data
+#'	usually read int from design file, annotation file, OD file and 
 #'	standard concentration data.
 #'
 #'@param x the elisa_plate object to load data into
-#'@param plate.header character
+#'@param plate.header characters
 #'@param plate.data data.frame OD readings
 #'@param plate.blank data.frame OD blank readings
 #'@param annotation data.frame annotation to guide reading.
 #'@param .... other parameters that will help reading data.
-#'@examples
-#'	elisa_plate();
+# # '@examples
+# # '	x<-elisa_plate();
 #' @export 
 
 setGeneric("load.ODs", signature="x",
 			function(x, plate.header,plate.data, plate.blank,annotation,....) standardGeneric("load.ODs"))
-#'@describeIn load.ODs to load ODs to the elisa_plate object
+#'@describeIn load.ODs to load ODs to an elisa_plate object
 setMethod("load.ODs", c("x"="elisa_plate"),
 		function(x,plate.header,plate.data, plate.blank,annotation)
 		{##based on annotation, load the plate od into object
@@ -181,24 +181,24 @@ setMethod("load.ODs", c("x"="elisa_plate"),
 #they both lists. We wraper up them so to easily work them out.
 #
 #defining elisa plate object, S4 class
-#'@title S4 class definition of elisa_run
+#'@title S4 class definition of an elisa_run object
 #'
-#' @description \code{\link{elisa_run-class}} define the S4 class of elisa_run
+#' @description \code{\link{elisa_run-class}} defines the S4 class of elisa_run
 #'
-#' @details defining the S4 class of the elisa_run.
+#' @details defining the S4 class of the elisa_run object.
 #'	This is list to hold the data for each elisa run. 
-#' 	It contains one or multiple elisa plate object.  
+#' 	It contains one or many elisa plate objects.  
 #'
 #' @concept ELISA
 #'
-#' @param batchID character specify batches
+#' @param batchID characters to specify the batch
 #'         
 # # ' @param expID character specify experiment or plate ID
-#' @param desc character data/experiment information 
+#' @param desc characters for the data/experiment information 
 #'          
-#' @param plates list of elisa_plate 
+#' @param plates list of elisa_plates 
 #' @param num.plates numeric the number of plates in this run
-#'@param date character the date for running the ELISA measurements
+#'@param date characters for the date of running the ELISA measurements
 #' @slot batchID character
 # #' @slot expID character
 #' @slot plates list
@@ -225,23 +225,23 @@ setClass("elisa_run",
 )
 
 #constructor
-#'@title constructor function to build elisa_run object
+#'@title Constructor function to build an elisa_run object
 #' @description S3 method as a constructor to build the S4 
 #'	class object of elisa_run \code{\link{elisa_run-class}} 
 #'
 #' @details S3 method as a constructor to build the S4 
 #'	class object of elisa_run \code{\link{elisa_run-class}}. 
 #'	Normally this is called to build a empty object 
-#'	with default values and then load the elisa_plate data into it
+#'	with default values and then load the elisa_run data into.
 #'	#
 #'
-#' @param batchID character specify batches
+#' @param batchID characters to specify the batch
 #'         
-#' @param desc character data/experiment information 
+#' @param desc characters for data/experiment information 
 #'          
-#' @param plates list elisa_plates in this run. could be one or multiple  
+#' @param plates list of elisa_plates in this run. could be one or many  
 #' @param num.plates numeric the number of plates in this run.
-#' @param date charater the date to run ELISA measurements
+#' @param date charaters the date to run ELISA measurements
 #' @param range.ODs numeric the range of ODs for the measurements
 #'	@return an elisa_run object 
 #' @seealso \code{\link{nls.lm}} \code{\link{elisa_run-class}} \code{\link{elisa_plate-class}} 
@@ -258,31 +258,31 @@ elisa_run<-function(batchID=NA_character_,#expID=NA_character_,
 	num.plates=num.plates, date=date,range.ODs=range.ODs))	
 }
 
-#'@title S4 class definition of elisa_batch
+#'@title S4 class definition of an elisa_batch object
 #'
-#' @description \code{\link{elisa_batch-class}} define the S4 class of elisa_batch
+#' @description \code{\link{elisa_batch-class}} define the S4 class of an elisa_batch object
 #'
 #' @details defining the S4 class of the elisa_batch.
-#'	This is list to hold the data for elisa batch. 
-#' 	It contains one or multiple elisa_run object.  
+#'	This holds the data for elisa batch. 
+#' 	It contains one or many elisa_run objects.  
 #'
 #' @concept ELISA
 #'
-#' @param batchID character specify batches
+#' @param batchID characters to specify the batch
 #'         
 # # ' @param expID character specify experiment or plate ID
-# @param desc character data/experiment information 
+# @param desc character string for the data/experiment information 
 #'          
-#' @param runs list of elisa_run 
-#' @param num.runs numeric the number of plates in this run
+#' @param runs list of elisa_run objects 
+#' @param num.runs numeric the number of elisa_runs in this batch
 #' @param pars numeric the actually parameters for the fitting.
-#'		for example for 5pl it is c(a, d,xmid, scal, g).
+#'		for example for the 5pl they are c(a, d,xmid, scal, g).
 #' @param model.fit list intend to contain information for the 
 #'		fitting of nls.lm. But not using it now.
-#' @param model.name character either 5pl (5-parameter) or 4pl 
+#' @param model.name characters of either the 5pl (5-parameter) or 4pl 
 #'		(4-parameter) logistic function
 #' @param range.ODs numeric the min and max ODs
-#' @param normFactor numeric batch-wise normalization factor 
+#' @param normFactor numeric the batch normalization factor ("S"). 
 #'
 #==========================
 #' @slot batchID character
@@ -317,7 +317,7 @@ setClass("elisa_batch",
 )
 
 #constructor
-#'@title constructor function to build elisa_batch object
+#'@title Constructor function to build an elisa_batch object
 #' @description S3 method as a constructor to build the S4 
 #'	class object of elisa_batch \code{\link{elisa_batch-class}} 
 #'
@@ -325,24 +325,24 @@ setClass("elisa_batch",
 #'	class object of elisa_batch \code{\link{elisa_batch-class}}. 
 #'	Normally this is called to build a empty object 
 #'	with default values and then load the elisa_run data into it
-#'	#
 #'
-#' @param batchID character specify batches
+#'
+#' @param batchID character string to specify a batches
 #'         
-#' @param desc character data/experiment information 
+#' @param desc character string for the data/experiment information 
 #'          
-#' @param runs list elisa_plates in this run. could be one or multiple  
+#' @param runs list of elisa_plates in this run. There could be one or many plates in a run.  
 #' @param num.runs numeric the number of plates in this run.
 #' @param pars numeric the actually parameters for the fitting.
-#'		for example for 5pl it is c(a, d,xmid, scal, g).
+#'		for example for the 5pl model they are c(a, d,xmid, scal, g).
 #' @param model.fit list intend to contain information for the 
 #'		fitting of nls.lm. But not using it now.
-#' @param model.name character either 5pl (5-parameter) or 4pl 
+#' @param model.name character string of either the 5pl (5-parameter) or 4pl 
 #'		(4-parameter) logistic function
 #' @param range.ODs numeric the min and max ODs
-
-#' @param normFactor numeric batch effect normalization factor.
-#'	@return an elisa_run object 
+#'
+#' @param normFactor numeric the batch effect normalization factor ("S").
+#'	@return an elisa_batch object 
 #' @seealso \code{\link{nls.lm}} \code{\link{elisa_run-class}} \code{\link{elisa_plate-class}} 
 #'	\code{\link{elisa_batch-class}} 
 #' @examples
@@ -438,24 +438,25 @@ predictBatchData<-function(batch)
 	return (batch)
 }
 
-#'@title predict the concentration of samples based on regression
-#'@description based on the regression, predict the concentration of 
-#'		of unknown sample. Assume the regression has been accomplished.
+#'@title Predict the concentration of samples based on fitting
+#'@description Based on the 5pl or 4pl regression, predict the concentration of 
+#'		of unknown samples. Assume the regression has been accomplished.
 #'@details The input data structure contains both the data (ODs) and
 #'		the fitted regression model. The estimation of unknonw concentration
-#'		based on the OD and standard curve of each plate. And then 
-#'		the batch effects are corrected/normalized and the corrected
+#'		based on the ODs and the standard curve of each plate.  
+#'		The batch effects are corrected/normalized and the corrected
 #'		concentrations also are	also written into the batch data
-#'		structure.
+#'		structure, if there are more than one batches in the data.
 #'@param batches list of elisa_batch objects containing 
 #'		both the raw data and the fitted regression model.
 #'
-#'@return the same list of elisa_batch with estimated
-#'		sample concentrations based on OD and fitted regression
+#'@return The same list of elisa_batch with estimated
+#'		sample concentrations based on ODs and the fitted regression
 #'		model. The estimated concentrations normalized/corrected
 #'		between different batches are also calculated and recorded.
 #'@seealso  \code{\link{elisa_batch}} \code{\link{elisa_run}}
 #'			\code{\link{elisa_plate}} 
+#'@references Feng 2018 \url{https://doi.org/10.1101/483800}
 #'@export
 predictAll<-function(batches)
 {
@@ -481,13 +482,13 @@ predictAll<-function(batches)
 
 #----------for data base saving/loading
 #functions to 
-#'@title S3 method to combine elisa_batch data
-#'@description to combine the two lists of elisa_batch data.
+#'@title Combine elisa_batch data
+#'@description Combine the two lists of elisa_batch data.
 #'     
 #'@details When combining, we not only concatenate the two data sets, 
 #'		but also combine batches, meaning the two 
-#'		batches with same batch ID will be merge into one. 
-#'		We will not merge the runs, but same batch from different
+#'		batches with same batch ID will be merged into one. 
+#'		We will not merge the runs. Therefore, same batch from different
 #'		list will always have different runs. It is the user's 
 #'		responsibility to make sure the runs are different.  
 #'@param  eb1 list of elisa_batch data 
@@ -513,7 +514,7 @@ predictAll<-function(batches)
 #'#do fitting. model will be written into data set.
 #'batches<-runFit(pars=pars,  batches=batches, refBatch.ID=1, model=model  )
 #'
-#'#now call to do predications based on the model.
+#'#call to do predications based on the model.
 #'batches<-predictAll(batches);
 #'
 #'batches.old<-batches;

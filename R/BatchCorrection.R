@@ -15,19 +15,19 @@
 #2) make initial values ready
 #3) prepare a, d 
 #4) prepare k, shifts., figure out the aggregation matrix, to repeat k's
-#'@title prepare the input for regressoin
-#'@description  blank for now
-#'@details  blank for now
-#'@param batches list contain the ELISA data, arranged in 
+#'@title Prepare the input for regressoin
+#'@description  Prepare the input data to feed in the fitting.
+#'
+#'@param batches list of the ELISA data arranged in 
 #'	batches. Each element of list contains a batch (list)
-#'	data, and each batch contains multiple elisa_run 
+#'	data, and each batch contains one or many the elisa_run 
 #'	objects \code{\link{elisa_plate}}
 #'	
-# #'@param ref.ID character the reference batch ID. all other 
+# #'@param ref.ID characters the reference batch ID. all other 
 # #'	batches are shifted/corrected towards this reference batch
 #' 
-#'@return list of parameters that will feed in to do regression.
-#'@seealso \code{\link{elisa_plate}}
+#'@return list of data that will feed in to do regression.
+#'@seealso \code{\link{elisa_plate}} \code{\link{elisa_batch}}\code{\link{elisa_run}}
 #'@export 
 prepareRegInput<-function(batches
 		)
@@ -69,78 +69,78 @@ prepareRegInput<-function(batches
 	return(list(y=y,x=x,ind.batch=ind.batch, ind.run=ind.run, ind.plate=ind.plate, num.stds=num.std))
 }
 
-    #'@title prepare initial values for fitting shifts 
-	#'@description generate the initial values for fitting shifts with 
+    #'@title Prepare initial values for fitting shifts 
+	#'@description Generate the initial values for fitting shifts with 
 	#'	a model of the 5-parameter logistic function.
-	#'@details this is a more complicated way to prepare the initials for shifting. 
-	#'	The assumption is that the OD values of analytes in ELISA 
-	#'	follow 
-	#'	a 5-parameter logistic function (5pl) as \cr
-	#'	\ifelse{html}{\out{<script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
-	#'						$$y = a + {{d-a} \over {(1 + e^ {{(xmid - x)} \over scal})}^g} $$
-	#'				 	}}{\deqn{y=a+\frac{d-a}{(1+e^(\frac{xmid-x}{scal}))^g}}{ASCII}}
-	#'	\cr 
-	#'	where a is the upper bound; d is the lower bound; 
-	#'	scal is the slope of the linear middle part of the line; 
-	#'	xmid is x value at which y equals to (a-d)/2; g is the asymmetric factor.\cr
-	#'	Another assumption is that the 5pl lines for different
-	#'	batches should follow a similar pattern, but shifted horizontally left or
-	#'	right due to factors such as the changes in the standard reagents. In terms of the
-	#'	5pl function parameters, the 5pl lines for different batches are identical
-	#'	in a, d, scal and g, but different in xmid; That is to say that if we shift these 
-	#'	lines horizontally with the correct amounts, the lines can merge into one line.
-	#'	Therefore, we fit these lines together to one 5paremeter logistic function with
-	#'	identical a, d, scal and g, as well as one xmid for the reference line and one
-	#'	shift for each other lines. In this function, we use a linear model to generate
-	#'	the initial values for these shifts parameter of the fitting. \cr
-	#'	The algorithm takes a local linear model to generate the initial values like this,
-	#'	
-	#'	\itemize{
-	#'	\item {1. carefully choose the data set as the reference\cr}
-	#'		{
-	#'		all the lines shifted towards this one.
-	#'		the reference line could be anywhere in the data.
-	#'		Theoretically, it can
-	#'		be any one, but empirically we pick the one line, whose maximum value is closest
-	#'		to d/2 (65535/2). This way the reference line has the best coverage over the range of 
-	#'		5pl and easy to converge for the fitting.
-	#'		}
-	#'	\item {2. determine the initial k values\cr}
-	#'		{
-	#'		we simply compare the biggest Y in 
-	#'		in each data series. Two cases are possible \cr
-	#'			\itemize{
-	#'				\item {1}{ Ymax_i < Ymax_r, nothing to do }
-	#'				\item {2}{ Ymax_i >Ymax_r, find the max Yj_i in the series to be smaller then Ymax_r}
-	#'			}
-	#'		Now we have a pair (Yj_i, Xj_i).
-	#'		}
-	#'	\item {3.Determine where does this pair belongs to inside the Yr data line\cr}
-	#'		{
-	#'		Find (Y(k-1)_r, Yk_r), where Y(k-1)_r<Yj_i<Yk_r. Then 
-	#'		simply using a linear model to determine Xj_i_pred for Yj_i according
-	#'		to reference data . It could possible happen that Yj_i is not inside
-	#'		reference range, meaning Yj_i<Ymin_r. In this case, we simply assuming
-	#'		Yj_i == Ymin_r, using X(Ymin_r) as the predication and shift the data.
-	#'		Hopefully, there will not be many cases like this.
-	#'		}
-	#'}
-	#'to estimate the shift k, we take 
-	#\eqn{k=log(Xj_i/Xj_i_pre)}\cr
-	#'   k=log(Xj_i/Xj_i_pre)    \cr
-	#'Another note is that we specify as an input which batch to use as the "reference".
-	#'Then within the batch, we pick as indicated above the reference standard line
-	#'. The return value records the batch, the run and the plate as output. Also
-	#'the inits output has a number of elements identical to the total number of
-	#'plates.
-	#The accessary function for preparint intial values for nlsLM
-	#this is necessary, because we might have many data series.
-	#we need this for actually prepare the initial values
-	
-	#take in the input, before the prepareInput 
-	#and make the initial values in order to do nlsLM fitting
-	#it returns an array which has length identifical to the total series (row lengths)
-	#
+	#'@details This is a more complicated way to prepare the initials for shifting. 
+	# #'	The assumption is that the OD values of analytes in ELISA 
+	# #'	follow 
+	# #'	a 5-parameter logistic function (5pl) as \cr
+#	#'	\ifelse{html}{\out{<script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+#	#'						$$y = a + {{d-a} \over {(1 + e^ {{(xmid - x)} \over scal})}^g} $$
+#	#'				 	}}{\deqn{y=a+\frac{d-a}{(1+e^(\frac{xmid-x}{scal}))^g}}{ASCII}}
+#	#'	\cr 
+#	#'	where a is the upper bound; d is the lower bound; 
+#	#'	scal is the slope of the linear middle part of the line; 
+#	#'	xmid is x value at which y equals to (a-d)/2; g is the asymmetric factor.\cr
+#	#'	Another assumption is that the 5pl lines for different
+#	#'	batches should follow a similar pattern, but shifted horizontally left or
+#	#'	right due to factors such as the changes in the standard reagents. In terms of the
+#	#'	5pl function parameters, the 5pl lines for different batches are identical
+#	#'	in a, d, scal and g, but different in xmid; That is to say that if we shift these 
+#	#'	lines horizontally with the correct amounts, the lines can merge into one line.
+#	#'	Therefore, we fit these lines together to one 5paremeter logistic function with
+#	#'	identical a, d, scal and g, as well as one xmid for the reference line and one
+#	#'	shift for each other lines. In this function, we use a linear model to generate
+#	#'	the initial values for these shifts parameter of the fitting. \cr
+#	#'	The algorithm takes a local linear model to generate the initial values like this,
+#	#'	
+#	#'	\itemize{
+#	#'	\item {1. carefully choose the data set as the reference\cr}
+#	#'		{
+#	#'		all the lines shifted towards this one.
+#	#'		the reference line could be anywhere in the data.
+#	#'		Theoretically, it can
+#	#'		be any one, but empirically we pick the one line, whose maximum value is closest
+#	#'		to d/2 (65535/2). This way the reference line has the best coverage over the range of 
+#	#'		5pl and easy to converge for the fitting.
+#	#'		}
+#	#'	\item {2. determine the initial k values\cr}
+#	#'		{
+#	#'		we simply compare the biggest Y in 
+#	#'		in each data series. Two cases are possible \cr
+#	#'			\itemize{
+#	#'				\item {1}{ Ymax_i < Ymax_r, nothing to do }
+#	#'				\item {2}{ Ymax_i >Ymax_r, find the max Yj_i in the series to be smaller then Ymax_r}
+#	#'			}
+#	#'		Now we have a pair (Yj_i, Xj_i).
+#	#'		}
+#	#'	\item {3.Determine where does this pair belongs to inside the Yr data line\cr}
+#	#'		{
+#	#'		Find (Y(k-1)_r, Yk_r), where Y(k-1)_r<Yj_i<Yk_r. Then 
+#	#'		simply using a linear model to determine Xj_i_pred for Yj_i according
+#	#'		to reference data . It could possible happen that Yj_i is not inside
+#	#'		reference range, meaning Yj_i<Ymin_r. In this case, we simply assuming
+#	#'		Yj_i == Ymin_r, using X(Ymin_r) as the predication and shift the data.
+#	#'		Hopefully, there will not be many cases like this.
+#	#'		}
+#	#'}
+#	#'To estimate the shift k, we take 
+#	#\eqn{k=log(Xj_i/Xj_i_pre)}\cr
+#	#'   k=log(Xj_i/Xj_i_pre)    \cr
+#	#'Another note is that we specify as an input which batch to use as the "reference".
+#	#'Then within the batch, we pick as indicated above the reference standard line
+#	#'. The return value records the batch, the run and the plate as output. Also
+#	#'the inits output has a number of elements identical to the total number of
+#	#'plates.
+#	#The accessary function for preparint intial values for nlsLM
+#	#this is necessary, because we might have many data series.
+#	#we need this for actually prepare the initial values
+#	
+#	#take in the input, before the prepareInput 
+#	#and make the initial values in order to do nlsLM fitting
+#	#it returns an array which has length identifical to the total series (row lengths)
+#	#
 	#'@param batches list of elisa_batch data 
 	#'		
 	#'@param ref.batch numeric the index of the reference batch. It is 1
@@ -215,8 +215,8 @@ findMiddle.plate<-function(eplate, OD.middle)
 }
 
 
-#'@title to get the OD ranges
-#'@description going through the list of  batches to get the OD range (min and max) 
+#'@title Get the OD ranges (min/max)
+#'@description Going through the list of  batches to get the OD range (min and max) 
 #'@param batches list of batches data
 #'@export
 rangeOD<-function(batches)
@@ -445,19 +445,19 @@ saveRegressionModel<-function(batches, regModel, mode=c("fix.both","fix.low", "f
 #align the standard by shifting toward reference and then plot
 #then together to QC the fitting.
 #graph.file: is the file name for the graph to be plotted.
-#'@title plot all batch data together
-#'@description call to plot the batch data together for visualization. 
+#'@title Plot all batch data together
+#'@description Plot the batch data together for visualization. 
 #'@details If the data has been analysed, a fitted line will be drawn too. If
 #'	there are more than one batches, each batch will be plotted with different color
 #'	and different synmbols. Different batches will also be shifted/adjusted based on their
-#'	S factor, and one single fitted line (based on the "reference" batch) will be plotted.
+#'	"S" factor, and one single fitted line (based on the "reference" batch) will be plotted.
 #'
-#'@param batches list of batches data objects either raw or analyzed data.
-#'@param graph.file text string as the output graph file name. If specified, a 
+#'@param batches list of batch data objects either raw or analyzed data.
+#'@param graph.file characters as the output graph file name. If specified, a 
 #'	SVG (*.svg) graph will be saved to the disk. Otherwise, the graph 
 #'	will be send to the stdout.
 #'
-#'@return a text string which is the graph file name, if graph.file is specified. NULL
+#'@return characters which specify the graph file name, if graph.file is specified. NULL
 #'	otherwise.
 #'
 #'@examples
@@ -564,16 +564,16 @@ plotAlignData<-function(batches, graph.file=NULL)
 #do not align the standards. simply plot the data by batch. 
 #no shifting
 #graph.file is the file name for the graph to be plotted.
-#'@title plot ELISA data for one batch
-#'@description call to plot the individual batch data for visualization. 
+#'@title Plot ELISA data for one batch
+#'@description Plot the individual batch data for visualization. 
 #'@details If the data has been analysed, a fitted line will be drawn too. 
 #'
-#'@param batch list of batches data objects either raw or analyzed data.
-#'@param graph.file text string as the output graph file name. If specified, a 
+#'@param batch batch data objects with either raw or analyzed data.
+#'@param graph.file characters as the output graph file name. If specified, a 
 #'	SVG (*.svg) graph will be saved to the disk. Otherwise, the graph 
 #'	will be send to the stdout.
 #'
-#'@return a text string which is the graph file name, if graph.file is specified. NULL
+#'@return characters which is the graph file name, if graph.file is specified. NULL
 #'	otherwise.
 #'
 #'@examples
@@ -659,11 +659,10 @@ plotBatchData<-function(batch, graph.file=NULL)
 }
 ###
 #write html report
-#'@title report ELISA data in HTML format.
-#'@description writting the ELISA analysis results by batch in HTML format. 
-#'@param batches list of elisa batch data objects. Assuming the data have been 
-#'		fitting to a correct model and the concentration of samples has been 
-#'		estimated based on the regression model.
+#'@title Report ELISA data in HTML format.
+#'@description Writting the ELISA analysis results by batch in HTML format. 
+#'@param batches list of elisa batch data objects. The data can be raw or after 
+#'	analyzed and batch-corrected.
 #'@param file.name character string denoting the report file. The file will be
 #'		written in HTML format.
 #'@param file.dir character string denoting the directory to save the report. 

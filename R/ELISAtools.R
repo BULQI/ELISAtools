@@ -24,8 +24,8 @@
 #'		with the ability to do batch correction/normalization 
 #'		
 #'
-#' @details This package is defined to run analysis of ELISA data. 
-#'		First, the caliration data are used to fit either five- or
+#' @details This package is developed to run analysis of ELISA data. 
+#'		First, the calibration data are used to fit either the five- or
 #'		four-parameter logistic model. Then the fitted model is
 #'		used to predict the concentrations of unknown samples.
 #'		If the batches of calibration data exist, 
@@ -33,5 +33,5 @@
 #'		calibration curve are then used for predication.
 #'
 #' 		Please refer to the vignettes to see details.
-#' 		
+#' @references Feng, et al 2018 \url{https://doi.org/10.1101/483800}		
 "_PACKAGE"

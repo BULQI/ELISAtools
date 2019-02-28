@@ -1,8 +1,8 @@
 Package: ELISAtools
-Title: ELISA Data Analysis With Batch Correction
+Title: ELISA Data Analysis with Batch Correction
 Version: 0.0.0.9000
 Authors@R: person("Feng", "Feng", email = "ffeng@BU.edu", role = c("aut", "cre"))
-Description: To run data analysis for ELISA results with either 
+Description: To run data analysis for ELISA data with either the 
 	five- or four-parameter logistic model as well as to do batch
 	effect correction/normalization.
 Depends: R (>= 3.4.0),

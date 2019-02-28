@@ -10,13 +10,13 @@
 #'@import minpack.lm
 # ##'@import stringi
 #
-#'@title fit 5- or 4-parameter logistic function
-#'@description fit 5- or 4-parameter logistic function to estimate the parameters
-#'	by pool the standard curves from all batches
+#'@title Fit 5- or 4-parameter logistic function
+#'@description Fit 5- or 4-parameter logistic function to estimate the parameters
+#'	by pooling the standard curves from all batches
 #'@details In this fitting, we first "guess" the initial values and then estimate
 #'	the parameters based on 5- or 4-parameter function by shifting every single standard 
-#'	curves towards the reference line (note: not shifting the lines from the same 
-#'	batches with identical amount). We are reasoning that the intra-batch and 
+#'	curves towards the reference line. 
+#'  We are reasoning that the intra-batch and 
 #'	inter-batch factors affect the curve similarly by shifting the curve 
 #'	left or right without changing its shapes. So we combine them together to
 #'	to fit one single reference curve. To model the inter-batch effects, we
@@ -29,12 +29,12 @@
 #'	When we try to normalize between batches, we will apply the batch level shift to 
 #'	all the curves within the same batch.
 #'@param pars numeric vector initial values to estimate the paramters
-#'@param a numeric the fixed value for a (the lower limit of the function)  
-#'@param d numeric the fixed value for d (the upper limit of the function)
+#'@param a numeric the initial value for a (the lower limit of the function)  
+#'@param d numeric the initial value for d (the upper limit of the function)
 #'@param batches list of the batch data used to fit the model
 #'@param refBatch.ID numeric or string indicating the 
 #'	reference batch, by default is set to be the first one.
-#'@param model string to indicate either 5-parameter logistic
+#'@param model characters to indicate either 5-parameter logistic
 #'	function (5pl, default one) or 4-parameter logistic (4pl) to 
 #'	be used in the fitting.
 #'@return the batch data with the fitted model 
@@ -58,6 +58,7 @@
 #'#do fitting. model will be written into data set.
 #'batches<-runFit(pars=pars,  batches=batches, refBatch.ID=1, model=model  )
 #' 
+#' @references Feng, et al 2018 \url{https://doi.org/10.1101/483800}
 #'@export
 #note 1) the outside caller need to prepare for data aggregation, in here
 #we do data aggregation.
@@ -314,14 +315,14 @@ fnRes2pShift<-function( pars, #parameters
 	#the five parameter logistic function
 	#take in the parameter 5 parameters and get the function values
 	#NOTE: assuming x has been logged 
-	#'@title five-parameter logistic function
-	#'@description takes in the paramters and independent variable values and return the 
-	#'		5pl function value.
+	#'@title The five-parameter logistic function
+	#'@description read in the paramters and the independent variable value(s), and then return the 
+	#'		5pl function value(s). For the 4pl model, set g to be 1.
 	#'@details The function has the following form \cr
 	#'     f(x)=a+(d-a)/((1+exp((xmid-x)/scal))^g)
-	#'@param pars numeric the parameters of 5pl. It has the following order: [a, d, xmid, scal, g].
-	#'@param x numeric log-transformed x values.
-	#'@return 5pl function values. 
+	#'@param pars numeric the parameters of the 5pl (or 4pl). It has the following content: [a, d, xmid, scal, g].
+	#'@param x numeric the log-transformed x value(s).
+	#'@return the 5pl function value(s). 
 	#'@export
 	f5pl<-function(pars,x)
 	{
@@ -348,13 +349,13 @@ fnRes2pShift<-function( pars, #parameters
 		#pred<-a+(d-a)/(1+exp((xmid-x)/scal))^g
 	}
 	
-	#'@title get rid of zeros in a numeric vector 
-	#'@description Get rid of zeros in a nueric vector before taking 
-	#' log of them. We basically replace the "zeros" with a negligible small 
-	#'	 value in order to avoid NaN at log-transformation.
+	#'@title Get rid of zeros in a numeric vector 
+	#'@description Get rid of zeros in a numeric vector before taking 
+	#' the logarithm of them. We basically replace the "zeros" with a negligible small 
+	#'	 value in order to avoid NaN upon the log-transformation.
 	#'@param x numeric values as input 
-	#'@param fac numeric factor to scale in order to get a "small" value to 
-    #'  to replace zero 
+	#'@param fac numeric a factor of scale in order to get a "small" value to 
+    #' replace zeros 
     #'@return a vector of value with zeros replaced.	
 	#'@export
 	#Note: output 
@@ -368,9 +369,10 @@ fnRes2pShift<-function( pars, #parameters
 		return(x+x_min)
 	}
 	
-    #'@title inverse function of the 5-parameter logist function 
-	#'@description the inverse function of the 5pl
-	#'@param pars the parameters of the function
+    #'@title The inverse of the 5-parameter logistic function 
+	#'@description The inverse function of the 5pl. Set the value of g to be 1, if the 4pl
+	#'	is of interest.
+	#'@param pars the parameters of the function. It has the following content: [a, d, xmid, scale, g].
 	#'@param y the value to be reverse calculated.
 	#'@return the value of the reverse function 
 	#'@export
