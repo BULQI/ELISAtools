@@ -49,6 +49,7 @@ devtools::install_github("BULQI/ELISAtools", build_opts = c("--no-resave-data", 
 #setwd( "E:\\feng\\LAB\\hg\\ELISA\\ELISAtools")
 #setwd("C:\\Feng\\LAB\\hg\\ELISA\\ELISAtools")
 setwd("/home/feng/Feng/hg/ELISAtools")
+setwd("/home/feng/Feng/hg/cran/ELISAtools")
 devtools::document()
 
 #remove
@@ -58,6 +59,7 @@ remove.packages("ELISAtools")
 #setwd( "E:\\feng\\LAB\\hg\\ELISA")
 #setwd("C:\\Feng\\LAB\\hg\\ELISA")
 setwd("/home/feng/Feng/hg/")
+setwd("/home/feng/Feng/hg/cran/")
 #install from local directory, but this is different from install.packages
 devtools::install("ELISAtools", build_vignettes=T)
 
@@ -75,6 +77,23 @@ library(ELISAtools)
 
 #to prepare the license file
 usethis::use_mit_license(name="Feng Feng")
+
+
+#how to run check for r cran submission
+#two ways under linux and one way under windows 
+#first clone the latest code from github 
+#go to the folder to delete unnecessary files such 
+# Read_and_delete_me
+# LICENSE.md, etc 
+#1) the way to do in windows  
+setwd("/home/feng/Feng/hg/cran/ELISAtools")
+devtools::check();
+#2) 
+setwd("/home/feng/Feng/hg/cran/ELISAtools")
+devtools::build(); #this will build a tarball under the top-level directory 
+#then to the terminal of the top directory and run commands
+R CMD check --as-ran --no-manual ELISAtools_0.1.0.tar.gz 
+#note: this R CMD check will issue a "New Submission" note anyway for a new submission.
 
 ################
 #update the text data
