@@ -220,7 +220,7 @@ plotAlignData(batches)
   The batch data can also be saved to a text file with the fitting results and S factors.
 ```{r, eval=F}
 #save the batch data with fitting results and S factors
-fn<-file.path("batchAnalysis.txt");
+fn<-file.path(tempdir(),"batchAnalysis.txt");
 saveDataText(batches, fn);
 ```
   
@@ -229,7 +229,7 @@ saveDataText(batches, fn);
 
 ```{r,eval=F}
 #reporting. need to specify a directory that is writable!!!
-reportHtml(batches)
+reportHtml(batches, file.dir=tempdir())
 ```
   
   An html report will be generated and a text format file is also saved to the disk. In this case, the html report and the data file have the default names, _report.html_ and _report.txt_.
@@ -240,14 +240,14 @@ reportHtml(batches)
 
 ```{r,eval=F}
   #now saving the combine data.
-  saveDB(batches, "elisa_tool1.rds");
-  batches.old<-loadDB("elisa_tool1.rds");
+  saveDB(batches, file.path(tempdir(),"elisa_tool1.rds"));
+  batches.old<-loadDB(file.path(tempdir(), "elisa_tool1.rds"));
 ```
   We can also combine the two ELISA batch data into one to analyze together and save for the future use.
 ```{r, eval=F}
   #now suppose want to join/combine the two batches, old and new 
   batches.com<-combineData(batches.old, batches);
-  reportHtml(batches.com)
+  reportHtml(batches.com,file.dir=tempdir())
 ```
   One thing to mention is that we need to rerun the fitting after combining the two batches of data.
 

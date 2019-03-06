@@ -58,7 +58,7 @@
 # #'		replicates.sample=replicates.sample, replicates.std=replicates.std
 # #'		)
 # #'
-# #'write.table(ann, file="annote.txt", sep="\t", row.names=T,
+# #'write.table(ann, file=file.path(tempdir(),"annote.txt"), sep="\t", row.names=T,
 # #'		col.names=TRUE)
 # #' @seealso  \code{\link{SensorgramData-class}} \code{\link{plot}} \code{\link{SaveSPRData}}
 # # @export
@@ -999,7 +999,7 @@ loadData<-function(design.file)
 #'batches<-predictAll(batches);
 #'
 #'#now saving the data.
-#'saveDB(batches, "elisa_tool1.rds");
+#'saveDB(batches, file.path(tempdir(),"elisa_tool1.rds"));
 #'
 #' loadDB("elisa_tool1.rds");
 #' @seealso  \code{\link{elisa_batch-class}} \code{\link{loadData}} \code{\link{saveDB}}
@@ -1066,7 +1066,7 @@ loadDB<-function(db)
 #'batches<-predictAll(batches);
 #'
 #'#now saving the data.
-#'saveDB(batches, "elisa_tool1.rds");
+#'saveDB(batches, file.path(tempdir(),"elisa_tool1.rds"));
 #'
 #' @seealso  \code{\link{elisa_batch-class}} \code{\link{loadData}} \code{\link{saveDB}}
 #'
@@ -1125,7 +1125,7 @@ saveDB<-function(batches, db)
 #'batches<-predictAll(batches);
 #'
 #'#now saving the data in text.
-#'saveDataText(batches, "elisa_data.txt");
+#'saveDataText(batches, file.path(tempdir(),"elisa_data.txt"));
 #'
 # #' @seealso  \code{\link{elisa_batch-class}} \code{\link{loadData}} \code{\link{saveDB}}
 #'

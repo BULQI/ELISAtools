@@ -683,10 +683,10 @@ plotBatchData<-function(batch, graph.file=NULL)
 #'
 #'batches<-loadData(file.path(dir_file,"design.txt"))
 #'
-#'#now add
+#'
 #'#----IMPORTANT-----
 #'#please make sure you have the write permission to save the html report
-#'reportHtml(batches);
+#'reportHtml(batches,file.dir=tempdir());
 #'
 #'@seealso  \code{\link{elisa_batch}} \code{\link{elisa_run}}
 #'			\code{\link{elisa_plate}} 
@@ -784,7 +784,7 @@ reportHtml<-function(batches, file.name="report", file.dir=".", desc="")
 	x<-HTML.title("Model fitting QC", HR=3);
 	#if(
 	fname.suffix<-as.numeric(format(Sys.time(), "%OS3"))*1000 
-	graphName<-paste0("aligned_",fname.suffix,".svg");
+	graphName<-file.path(file.dir,paste0("aligned_",fname.suffix,".svg"));
 	x<-plotAlignData(batches, graphName);
 	x<-HTMLInsertGraph(graphName,file=file.path(file.dir,paste0(file.name,".html")));
 	#x<-HTMLplot() ;
@@ -796,14 +796,14 @@ reportHtml<-function(batches, file.name="report", file.dir=".", desc="")
 		batch<-batches[[i]];
 		
 		x<-HTML.title(paste0("Batch:",batch@batchID,"; S Factor:", format(batch@normFactor,digit=3,nsmall=2)), HR=2);
-		graphName<-paste0("batch_",i,"_",fname.suffix, ".svg");
+		graphName<-file.path(file.dir,paste0("batch_",i,"_",fname.suffix, ".svg"));
 		x<-plotBatchData(batch, graphName);
 		#cat("graph name is:", graphName,"\n");
 		x<-HTMLInsertGraph(graphName,file=file.path(file.dir,paste0(file.name,".html")));
 		#cat("file name is :", file.path(file.dir,paste0(file.name,".html")),"\n");
 		#x<-HTMLplot() ;
 		#write data.
-		x<-Sys.sleep(0.9);
+		x<-Sys.sleep(0.1);
 		#x<-HTMLhr();
 		for(j in 1:batch@num.runs)
 		{
