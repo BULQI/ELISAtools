@@ -5,7 +5,7 @@ Authors@R: person("Feng", "Feng", email = "ffeng@BU.edu", role = c("aut", "cre")
 Description: To run data analysis for enzyme-link immunosorbent assays (ELISA). 
 	The package will fit data with either the five- or four-parameter logistic function for single ELISA. 
 	More importantly it is aimed to do the batch effect correction/normalization when there are many batches of ELISAs. 
-	Feng, et al (2018) <doi:10.1101/483800> 
+	Please see the reference Feng, et al (2018) <doi:10.1101/483800> 
 Depends: R (>= 3.4.0),
 	R2HTML (>= 2.3.2),
 	stringi (>= 1.1.7),

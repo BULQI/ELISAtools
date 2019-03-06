@@ -1001,7 +1001,7 @@ loadData<-function(design.file)
 #'#now saving the data.
 #'saveDB(batches, file.path(tempdir(),"elisa_tool1.rds"));
 #'
-#' loadDB("elisa_tool1.rds");
+#' loadDB(file.path(tempdir(),"elisa_tool1.rds"));
 #' @seealso  \code{\link{elisa_batch-class}} \code{\link{loadData}} \code{\link{saveDB}}
 #'
 #'@export
