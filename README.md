@@ -1,5 +1,6 @@
-# ELISAtools
-R software tool package to do ELISA analysis, especially with batch effect correction/normalization
+# ELISAtools (Release Version 0.1.0)
+R software tool package to do ELISA analysis, especially with batch effect correction/normalization.
+
 
 ## Installation
 
