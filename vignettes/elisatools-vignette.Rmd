@@ -249,7 +249,7 @@ reportHtml(batches, file.dir=tempdir())
   batches.com<-combineData(batches.old, batches);
   reportHtml(batches.com,file.dir=tempdir())
 ```
-  One thing to mention is that we need to rerun the fitting after combining the two batches of data.
+  One thing to mention is that we need to re-run the fitting after combining the two batches of data.
 
 # 4. Session Info
   

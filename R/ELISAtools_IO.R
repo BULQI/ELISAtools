@@ -1198,7 +1198,7 @@ saveDataText<-function(batches, file.name)
 				for(p in 1:length(ids))
 				{
 						smp<-unknown[unknown$ID==ids[p],]$OD
-						dfm[dfm$ID==ids[p],c(dim(dfm)[2]-nRep+c(1:nRep))]<-smp;
+						dfm[dfm$ID==ids[p],c(dim(dfm)[2]-nRep+c(1:length(smp)))]<-smp;
 						#if(is.null(batch@runs[[j]]@plates[[k]]@mdata.unknown)||dim(batch@runs[[j]]@plates[[k]]@mdata.unknown)[1]==0){
 						#	dfm[dfm$ID==ids[p],"OD"]<-mean(smp);
 						#}
