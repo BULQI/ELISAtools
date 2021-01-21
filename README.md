@@ -1,4 +1,4 @@
-# ELISAtools (Developing branch)
+# ELISAtools (Release V0.1.5)
 R software tool package to do ELISA analysis, especially with batch effect correction/normalization
 
 ## Installation
