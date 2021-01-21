@@ -487,7 +487,8 @@ plotAlignData<-function(batches, graph.file=NULL)
 	}
 	if(!is.null(graph.file)&&graph.file!="")
 	{
-		svg(filename=graph.file)
+		#svg(filename=graph.file)
+        png(filename=graph.file)
 	}
 	#plot 
 	if(length(batches)<=0)
@@ -614,7 +615,8 @@ plotBatchData<-function(batch, graph.file=NULL)
 	
 	if(!is.null(graph.file)&&graph.file!="")
 	{
-		svg(filename=graph.file)
+		#svg(filename=graph.file)
+        png(filename=graph.file)
 	}
 	
 	if((batch@model.name=="5pl"||batch@model.name=="4pl")&&length(pars)==5)
@@ -784,7 +786,8 @@ reportHtml<-function(batches, file.name="report", file.dir=".", desc="")
 	x<-HTML.title("Model fitting QC", HR=3);
 	#if(
 	fname.suffix<-as.numeric(format(Sys.time(), "%OS3"))*1000 
-	graphName<-file.path(file.dir,paste0("aligned_",fname.suffix,".svg"));
+	#graphName<-file.path(file.dir,paste0("aligned_",fname.suffix,".svg"));
+    graphName<-file.path(file.dir,paste0("aligned_",fname.suffix,".png"));
 	x<-plotAlignData(batches, graphName);
 	x<-HTMLInsertGraph(graphName,file=file.path(file.dir,paste0(file.name,".html")));
 	#x<-HTMLplot() ;
@@ -796,7 +799,8 @@ reportHtml<-function(batches, file.name="report", file.dir=".", desc="")
 		batch<-batches[[i]];
 		
 		x<-HTML.title(paste0("Batch:",batch@batchID,"; S Factor:", format(batch@normFactor,digit=3,nsmall=2)), HR=2);
-		graphName<-file.path(file.dir,paste0("batch_",i,"_",fname.suffix, ".svg"));
+		#graphName<-file.path(file.dir,paste0("batch_",i,"_",fname.suffix, ".svg"));
+        graphName<-file.path(file.dir,paste0("batch_",i,"_",fname.suffix, ".png"));
 		x<-plotBatchData(batch, graphName);
 		#cat("graph name is:", graphName,"\n");
 		x<-HTMLInsertGraph(graphName,file=file.path(file.dir,paste0(file.name,".html")));

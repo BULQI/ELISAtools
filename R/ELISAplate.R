@@ -456,7 +456,7 @@ predictBatchData<-function(batch)
 #'		between different batches are also calculated and recorded.
 #'@seealso  \code{\link{elisa_batch}} \code{\link{elisa_run}}
 #'			\code{\link{elisa_plate}} 
-#'@references Feng 2018 \url{https://doi.org/10.1101/483800}
+#'@references Feng 2018 \doi{https://doi.org/10.1101/483800}
 #'@export
 predictAll<-function(batches)
 {

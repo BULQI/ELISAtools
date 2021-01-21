@@ -3,7 +3,7 @@ R software tool package to do ELISA analysis, especially with batch effect corre
 
 ## Installation
 
-To install the release version of package (v0.1.0)
+To install the release version of package (v0.1.5)
 ```
 install.packages("ELISAtools")
 ```

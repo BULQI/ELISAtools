@@ -58,7 +58,7 @@
 #'#do fitting. model will be written into data set.
 #'batches<-runFit(pars=pars,  batches=batches, refBatch.ID=1, model=model  )
 #' 
-#' @references Feng, et al 2018 \url{https://doi.org/10.1101/483800}
+#' @references Feng, et al 2018 \doi{https://doi.org/10.1101/483800}
 #'@export
 #note 1) the outside caller need to prepare for data aggregation, in here
 #we do data aggregation.

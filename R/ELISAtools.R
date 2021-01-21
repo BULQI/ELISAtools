@@ -2,7 +2,7 @@
 #	doing batch effect correction.
 #	By Feng @ BU 07/01/2018 Boston University (ffeng@bu.edu)
 #
-#  Version 0.1
+#  Version 0.1.5
 #  For now, 1)it will only fit either the five- or four-parameter logistic model
 #  2)do analysis to predicate based on the calibration the unknown concentration
 #  3)if there are batches, will fit to estimate the shift factor and do correction/normalization 
@@ -33,5 +33,5 @@
 #'		calibration curve are then used for predication.
 #'
 #' 		Please refer to the vignettes to see details.
-#' @references Feng, et al 2018 \url{https://doi.org/10.1101/483800}		
+#' @references Feng, et al 2018 \doi{https://doi.org/10.1101/483800}		
 "_PACKAGE"
