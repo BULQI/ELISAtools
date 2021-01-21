@@ -33,5 +33,5 @@
 #'		calibration curve are then used for predication.
 #'
 #' 		Please refer to the vignettes to see details.
-#' @references Feng, et al 2018 \doi{https://doi.org/10.1101/483800}		
+#' @references Feng, et al 2018 \doi{10.1101/483800}		
 "_PACKAGE"
