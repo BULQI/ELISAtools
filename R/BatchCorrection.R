@@ -740,7 +740,7 @@ reportHtml<-function(batches, file.name="report", file.dir=".", desc="")
 		}
 	};
 	x<-HTML(data.frame(desc="Regression Model:", content=batches[[1]]@model.name));
-	if(!is.null(batches[[1]]@model.name)&&batches[[1]]@pars!=-1){
+	if(!is.null(batches[[1]]@model.name)&&batches[[1]]@pars[1]!=-1){
 		x<-HTML("Model Parameters:");
 		y<-{
 			if(batches[[1]]@model.name=="5pl"){
