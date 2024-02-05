@@ -1,12 +1,12 @@
 Package: ELISAtools
 Title: ELISA Data Analysis with Batch Correction
-Version: 0.1.5
+Version: 0.1.8
 Authors@R: person("Feng", "Feng", email = "ffeng@BU.edu", role = c("aut", "cre"))
 Description: To run data analysis for enzyme-link immunosorbent assays (ELISAs). 
 	Either the five- or four-parameter logistic model will be fitted for data of single ELISA. 
 	Moreover, the batch effect correction/normalization will be carried out, when there are more than one batches of ELISAs. 
 	Feng (2018) <doi:10.1101/483800>.
-Depends: R (>= 3.4.0),
+Depends: R (>= 4.0.0),
 	R2HTML (>= 2.3.2),
 	stringi (>= 1.1.7),
 	minpack.lm (>= 1.2-1),
@@ -14,7 +14,7 @@ Depends: R (>= 3.4.0),
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.1.0.9000
+RoxygenNote: 7.2.3
 Collate: 
     'BatchCorrection.R'
     'ELISAplate.R'

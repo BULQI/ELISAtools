@@ -292,7 +292,7 @@ read.annotation<-function(annotation,  std.conc)
 	{
 		stop("ERROR: no annotation input specified");
 	}
-	if(class(annotation)!="data.frame")
+	if(!is.data.frame(annotation))
 	{
 		stop("ERROR:  annotation input is not in a correct format");
 	}
@@ -341,7 +341,7 @@ read.annotation<-function(annotation,  std.conc)
 	{
 		stop("ERROR:missing standard concentration data, please specify")
 	}
-	if(class(std.conc)!="data.frame")
+	if(!is.data.frame(std.conc))
 	{
 		stop("ERROR:std.conc should be a data frame");
 	}
@@ -596,7 +596,7 @@ read.plate<-function(ODs, annotation, batchID, expID)
 	{
 		stop("Error: please specify the files of OD data")
 	}
-	if(class(ODs)!="character")
+	if(!is.character(ODs))
 	{
 		stop("ERROR: the input OD is not in correct format!!")
 	}
@@ -604,15 +604,15 @@ read.plate<-function(ODs, annotation, batchID, expID)
 	{
 		stop("ERROR: please specify the annoation data for the plate");
 	}
-	if(class(annotation)!="list")
+	if(!is.list(annotation))
 	{
 		stop("ERROR: the input annotation is not in correct format")
 	}
-	if(is.null(annotation$standards)||class(annotation$standards)!="data.frame")
+	if(is.null(annotation$standards)||!is.data.frame(annotation$standards))
 	{
 		stop("ERROR: the input annotation is not in correct format")
 	}
-	if(!is.null(annotation$unknowns)&&class(annotation$unknowns)!="data.frame")
+	if(!is.null(annotation$unknowns)&&!is.data.frame(annotation$unknowns))
 	{#could be null, meaning no unknowns
 		stop("ERROR: the input annotation is not in correct format")
 	}
@@ -742,7 +742,7 @@ read.plates<-function(fileName, annotations, num.plate=1, batchID, expID ,date=N
 	{
 		stop("ERROR: please specify the annoation data for the plate");
 	}
-	if(class(annotations)!="list")
+	if(!is.list(annotations))
 	{
 		stop("ERROR: the input annotation is not in correct format")
 	}

@@ -133,19 +133,19 @@ setMethod("load.ODs", c("x"="elisa_plate"),
 			{
 				x<-elisa_plate();
 			}
-			if(missing(plate.header)||class(plate.header)!="character")
+			if(missing(plate.header)||!is.character(plate.header))
 			{
 				stop("please the input plate header in correct format");
 			}
-			if(missing(plate.data)||class(plate.data)!="numeric")
+			if(missing(plate.data)||!is.numeric(plate.data))
 			{
 				stop("please the input plate data in correct format");
 			}
-			if(missing(annotation)||class(annotation)!="list")
+			if(missing(annotation)||!is.list(annotation))
 			{
 				stop("please the input plate annotation in correct format");
 			}
-			if(missing(plate.blank)||class(plate.blank)!="numeric")
+			if(missing(plate.blank)||!is.numeric(plate.blank))
 			{
 				stop("please the input plate blank in correct format");
 			}
@@ -357,6 +357,7 @@ elisa_batch<-function(batchID=NA_character_,#expID=NA_character_,
 	num.runs=num.runs, range.ODs=range.ODs, normFactor=normFactor))	
 }
 
+#'@importFrom methods is
 #setClassUnion("nls.lmOrNULL",c("nls.lm","NULL")) 
 #setGeneric
 #setGeneric("predict", signature="x",
@@ -379,7 +380,7 @@ predictBatchData<-function(batch)
 	{
 		stop("ERROR:please specify the input batch data");
 	}
-	if(class(batch)!="elisa_batch")
+	if(!is(batch,"elisa_batch"))
 	{
 		stop("ERROR:please specify the data as elisa_batch");
 	}
@@ -464,7 +465,7 @@ predictAll<-function(batches)
 	{
 		stop("ERROR:please specify the input batch data");
 	}
-	if(class(batches)!="list")
+	if(!is.list(batches))
 	{
 		stop("ERROR:please specify the data as a list of elisa_batch object");
 	}
